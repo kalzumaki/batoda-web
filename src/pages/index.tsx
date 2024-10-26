@@ -3,6 +3,7 @@ import Topbar from '@/components/TopBar';
 const HomePage = () => {
   return (
     <>
+    <title>BATODA</title>
       <Topbar/>
     <main className="min-h-screen bg-lightTeal flex flex-col justify-center items-center">
       <header className="text-center">

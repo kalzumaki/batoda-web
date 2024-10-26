@@ -1,13 +1,13 @@
 // src/components/Topbar.tsx
 import React from 'react';
 import AuthButton from './AuthButton';
+import { useRouter } from 'next/router';
 
 const Topbar: React.FC = () => {
-  const handleLogin = () => {
-    console.log("Login clicked");
-    // Add login functionality here
-  };
-
+    const router = useRouter();
+    const handleLogin = () => {
+        router.push('/login'); // Redirects to the login page
+      };
   const handleRegister = () => {
     console.log("Register clicked");
     // Add register functionality here
