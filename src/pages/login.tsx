@@ -23,29 +23,37 @@ const LoginPage = () => {
         }),
       });
 
-      const data = await response.json(); // Always parse response data
+      const data = await response.json();
 
       if (response.ok) {
         console.log("Login successful:", data);
 
         // Check the user type ID
-        const userTypeId = data.user.user_type_id; // Adjusted according to your API response
+        const userTypeId = data.user.user_type_id;
 
-        if (userTypeId >= 1 && userTypeId <= 5) {
-          // Store the token in cookies for user types 1-5
-          Cookies.set("userToken", data.access_token, { expires: 1 }); // Expires in 1 day
-          router.push("/"); // Redirect to a dashboard or home page after successful login
+        // Redirect based on user type
+        if (userTypeId === 1) {
+          Cookies.set("userToken", data.access_token, { expires: 1 });
+          router.push("/admin");
+        } else if (userTypeId === 2) {
+          Cookies.set("userToken", data.access_token, { expires: 1 });
+          router.push("/president");
+        } else if (userTypeId === 3) {
+          Cookies.set("userToken", data.access_token, { expires: 1 });
+          router.push("/secretary");
+        } else if (userTypeId === 4) {
+          Cookies.set("userToken", data.access_token, { expires: 1 });
+          router.push("/treasurer");
+        } else if (userTypeId === 5) {
+          Cookies.set("userToken", data.access_token, { expires: 1 });
+          router.push("/auditor");
         } else {
-          // For user types 6-8 or unexpected user types
           setError(
             "Please log in to the app. Your account is not authorized to access this application."
           );
         }
       } else {
-        // Handle unsuccessful response
-        setError(
-          "Please log in to the app. Your account is not authorized to access this application."
-        ); // General message for any failed login attempt
+        setError("Invalid credentials. Please try again.");
       }
     } catch (err) {
       console.error("Error logging in:", err);
@@ -55,7 +63,7 @@ const LoginPage = () => {
 
   return (
     <>
-     <title>LOGIN</title>
+      <title>LOGIN</title>
       <div className="min-h-screen flex items-center justify-center bg-lightTeal">
         <form
           onSubmit={handleSubmit}
