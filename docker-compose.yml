@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .  
+      dockerfile: .docker/Dockerfile  # Path to the Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ..:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_APP_KEY=${APP_KEY}
+      - NEXT_PUBLIC_APP_SECRET=${APP_SECRET}
+      - NEXT_PUBLIC_API_ENDPOINT=${API_ENDPOINT}
+
+networks:
+  default:
+    name: nextjs_network
