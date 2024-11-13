@@ -16,6 +16,11 @@ const LoginPage: React.FC = () => {
   useEffect(() => {
     const savedEmail = sessionStorage.getItem("emailOrMobile") || "";
     setEmailOrMobile(savedEmail);
+
+    const token = Cookies.get("userToken");
+    if (token) {
+      redirectToRoleBasedRoute();
+    }
   }, []);
 
   useEffect(() => {
@@ -35,6 +40,23 @@ const LoginPage: React.FC = () => {
       return () => clearInterval(countdownInterval);
     }
   }, [retryAfter]);
+
+  const redirectToRoleBasedRoute = () => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const { user_type_id } = JSON.parse(storedUser);
+      const userRoutes: { [key: number]: string } = {
+        1: "/admin",
+        2: "/president",
+        3: "/secretary",
+        4: "/treasurer",
+        5: "/auditor",
+      };
+      if (userRoutes[user_type_id]) {
+        router.push(userRoutes[user_type_id]);
+      }
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -64,28 +86,29 @@ const LoginPage: React.FC = () => {
 
       const data: LoginResponse = await response.json();
 
-      if (response.ok) {
+      if (response.ok && data.status) {
         console.log("Login successful:", data);
 
         setLoginAttempts(0);
-        Cookies.set("userToken", data.access_token, { expires: 1 });
 
-        const userRoutes: { [key: number]: string } = {
-          1: "/admin",
-          2: "/president",
-          3: "/secretary",
-          4: "/treasurer",
-          5: "/auditor",
-        };
+        // Securely store the token
+        Cookies.set("userToken", data.access_token, {
+          expires: 1,
+          secure: true,
+          sameSite: "Strict",
+        });
 
-        const userTypeId = data.user.user_type_id;
-        if (userRoutes[userTypeId]) {
-          router.push(userRoutes[userTypeId]);
-        } else {
-          setError(
-            "Your account is not authorized to access this application."
-          );
-        }
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            firstName: data.user.fname,
+            lastName: data.user.lname,
+            user_type_id: data.user.user_type_id,
+          })
+        );
+
+        // Redirect to the appropriate route based on user role
+        redirectToRoleBasedRoute();
       } else {
         setLoginAttempts((prevAttempts) => prevAttempts + 1);
         setError(data.message || "Invalid credentials. Please try again.");

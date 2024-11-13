@@ -18,7 +18,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const apiUrl = new URL(`${API_BASE_URL}${endpoint}`);
 
   try {
-    // Prepare the fetch options
     const fetchOptions: RequestInit = {
       method,
       headers: {
