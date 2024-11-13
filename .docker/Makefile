@@ -1,10 +1,7 @@
-# Makefile
 
-# Variables
 DOCKER_COMPOSE = docker-compose
 APP_SERVICE = app
 
-# Docker Compose commands
 up:
 	$(DOCKER_COMPOSE) up -d
 
@@ -33,11 +30,9 @@ npm-run-build:
 npm-run-start:
 	$(DOCKER_COMPOSE) exec $(APP_SERVICE) npm run start
 
-# Clean up dangling images and unused volumes
 clean:
 	docker system prune -f
 	docker volume prune -f
 
-# Run shell inside container
 shell:
 	$(DOCKER_COMPOSE) exec $(APP_SERVICE) sh

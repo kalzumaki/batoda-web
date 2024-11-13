@@ -10,7 +10,7 @@ const AdminDashboard = () => {
     const token = Cookies.get("userToken");
     console.log(token);
     if (!token) {
-      router.push("/login"); // Redirect to login if no token is found
+      router.push("/login");
     }
   }, [router]);
 

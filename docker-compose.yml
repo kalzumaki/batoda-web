@@ -1,12 +1,11 @@
-version: '3.9'
 
 services:
   app:
     build:
-      context: .  # Adjusted to point to the root directory of your project
-      dockerfile: .docker/Dockerfile  # Path to the Dockerfile
+      context: .
+      dockerfile: .docker/dev.Dockerfile
     ports:
-      - "3000:3000"
+      - "3001:3000"
     volumes:
       - ..:/app
       - /app/node_modules
@@ -15,10 +14,10 @@ services:
       - NEXT_PUBLIC_APP_KEY=${APP_KEY}
       - NEXT_PUBLIC_APP_SECRET=${APP_SECRET}
       - NEXT_PUBLIC_API_ENDPOINT=${API_ENDPOINT}
-    restart: "no"  # Prevents the container from restarting automatically
+    restart: "no"
     deploy:
       restart_policy:
-        condition: none  # Ensures that the container will not restart if it stops
+        condition: none
 
 networks:
   default:

@@ -1,11 +1,11 @@
-// src/components/AuthButton.tsx
+
 import React from 'react';
 
 type AuthButtonProps = {
   label: string;
   onClick: () => void;
   variant?: 'primary' | 'secondary';
-  className?: string; // Add className as an optional prop
+  className?: string;
 };
 
 const AuthButton: React.FC<AuthButtonProps> = ({ label, onClick, variant = 'primary', className = '' }) => {

@@ -6,11 +6,10 @@ import { useRouter } from 'next/router';
 const Topbar: React.FC = () => {
     const router = useRouter();
     const handleLogin = () => {
-        router.push('/login'); // Redirects to the login page
+        router.push('/login');
       };
   const handleRegister = () => {
     console.log("Register clicked");
-    // Add register functionality here
   };
 
   return (

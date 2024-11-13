@@ -1,15 +1,54 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
+import InputField from "@/components/InputField";
+import PasswordInputField from "@/components/PasswordInputField";
+import { LoginResponse } from "@/types/login";
 
-const LoginPage = () => {
-  const [emailOrMobile, setEmailOrMobile] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+const LoginPage: React.FC = () => {
+  const [emailOrMobile, setEmailOrMobile] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [loginAttempts, setLoginAttempts] = useState<number>(0);
+  const [retryAfter, setRetryAfter] = useState<number | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const savedEmail = sessionStorage.getItem("emailOrMobile") || "";
+    setEmailOrMobile(savedEmail);
+  }, []);
+
+  useEffect(() => {
+    if (retryAfter && retryAfter > 0) {
+      const countdownInterval = setInterval(() => {
+        setRetryAfter((prevRetryAfter) =>
+          prevRetryAfter ? prevRetryAfter - 1 : 0
+        );
+      }, 1000);
+
+      if (retryAfter === 1) {
+        setLoginAttempts(0);
+        setRetryAfter(null);
+        setError("");
+      }
+
+      return () => clearInterval(countdownInterval);
+    }
+  }, [retryAfter]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setEmailOrMobile(value);
+    sessionStorage.setItem("emailOrMobile", value);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (loginAttempts >= 3) {
+      setError("You've reached the maximum attempts. Please wait.");
+      return;
+    }
 
     try {
       const response = await fetch(`/api/proxy?endpoint=/login`, {
@@ -23,37 +62,40 @@ const LoginPage = () => {
         }),
       });
 
-      const data = await response.json();
+      const data: LoginResponse = await response.json();
 
       if (response.ok) {
         console.log("Login successful:", data);
 
-        // Check the user type ID
-        const userTypeId = data.user.user_type_id;
+        setLoginAttempts(0);
+        Cookies.set("userToken", data.access_token, { expires: 1 });
 
-        // Redirect based on user type
-        if (userTypeId === 1) {
-          Cookies.set("userToken", data.access_token, { expires: 1 });
-          router.push("/admin");
-        } else if (userTypeId === 2) {
-          Cookies.set("userToken", data.access_token, { expires: 1 });
-          router.push("/president");
-        } else if (userTypeId === 3) {
-          Cookies.set("userToken", data.access_token, { expires: 1 });
-          router.push("/secretary");
-        } else if (userTypeId === 4) {
-          Cookies.set("userToken", data.access_token, { expires: 1 });
-          router.push("/treasurer");
-        } else if (userTypeId === 5) {
-          Cookies.set("userToken", data.access_token, { expires: 1 });
-          router.push("/auditor");
+        const userRoutes: { [key: number]: string } = {
+          1: "/admin",
+          2: "/president",
+          3: "/secretary",
+          4: "/treasurer",
+          5: "/auditor",
+        };
+
+        const userTypeId = data.user.user_type_id;
+        if (userRoutes[userTypeId]) {
+          router.push(userRoutes[userTypeId]);
         } else {
           setError(
-            "Please log in to the app. Your account is not authorized to access this application."
+            "Your account is not authorized to access this application."
           );
         }
       } else {
-        setError("Invalid credentials. Please try again.");
+        setLoginAttempts((prevAttempts) => prevAttempts + 1);
+        setError(data.message || "Invalid credentials. Please try again.");
+
+        if (loginAttempts + 1 >= 3) {
+          setRetryAfter(60);
+          setError(
+            "You've reached the maximum attempts. Please wait 60 seconds."
+          );
+        }
       }
     } catch (err) {
       console.error("Error logging in:", err);
@@ -75,37 +117,38 @@ const LoginPage = () => {
 
           {error && <p className="text-red-500 mb-4">{error}</p>}
 
-          <div className="mb-4">
-            <label htmlFor="emailOrMobile" className="block text-black">
-              Email or Mobile
-            </label>
-            <input
-              type="text"
-              id="emailOrMobile"
-              value={emailOrMobile}
-              onChange={(e) => setEmailOrMobile(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm text-black"
-              required
-            />
-          </div>
+          {loginAttempts > 0 && loginAttempts < 3 && (
+            <p className="text-red-500 mb-4">
+              Attempts remaining: {3 - loginAttempts}
+            </p>
+          )}
 
-          <div className="mb-6">
-            <label htmlFor="password" className="block text-black">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm text-black"
-              required
-            />
-          </div>
+          {retryAfter !== null && retryAfter > 0 && (
+            <p className="text-red-500 mb-4">
+              Please wait {retryAfter} seconds before retrying.
+            </p>
+          )}
+
+          <InputField
+            label="Email or Mobile"
+            id="emailOrMobile"
+            value={emailOrMobile}
+            onChange={handleInputChange}
+            required
+          />
+
+          <PasswordInputField
+            label="Password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
 
           <button
             type="submit"
             className="w-full bg-darkGreen text-white py-2 px-4 rounded-md hover:bg-teal transition-all"
+            disabled={retryAfter !== null && retryAfter > 0}
           >
             Login
           </button>
