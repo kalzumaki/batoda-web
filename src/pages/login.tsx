@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import InputField from "@/components/InputField";
 import PasswordInputField from "@/components/PasswordInputField";
 import { LoginResponse } from "@/types/login";
@@ -11,6 +13,7 @@ const LoginPage: React.FC = () => {
   const [error, setError] = useState<string>("");
   const [loginAttempts, setLoginAttempts] = useState<number>(0);
   const [retryAfter, setRetryAfter] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -53,8 +56,13 @@ const LoginPage: React.FC = () => {
         5: "/auditor",
       };
       if (userRoutes[user_type_id]) {
-        router.push(userRoutes[user_type_id]);
+        router.push(userRoutes[user_type_id]).then(() => {
+          setIsLoading(false);
+          toast.success("Logged in successfully!");
+        });
       }
+    } else {
+      setIsLoading(false);
     }
   };
 
@@ -72,6 +80,8 @@ const LoginPage: React.FC = () => {
       return;
     }
 
+    setIsLoading(true);
+
     try {
       const response = await fetch(`/api/proxy?endpoint=/login`, {
         method: "POST",
@@ -87,10 +97,7 @@ const LoginPage: React.FC = () => {
       const data: LoginResponse = await response.json();
 
       if (response.ok && data.status) {
-        console.log("Login successful:", data);
-
         setLoginAttempts(0);
-
         Cookies.set("userToken", data.access_token, {
           expires: 1,
           secure: true,
@@ -110,7 +117,7 @@ const LoginPage: React.FC = () => {
         redirectToRoleBasedRoute();
       } else {
         setLoginAttempts((prevAttempts) => prevAttempts + 1);
-        setError(data.message || "Invalid credentials. Please try again.");
+        toast.error(data.message || "Invalid credentials. Please try again.");
 
         if (loginAttempts + 1 >= 3) {
           setRetryAfter(60);
@@ -118,10 +125,12 @@ const LoginPage: React.FC = () => {
             "You've reached the maximum attempts. Please wait 60 seconds."
           );
         }
+        setIsLoading(false);
       }
     } catch (err) {
       console.error("Error logging in:", err);
-      setError("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
+      setIsLoading(false);
     }
   };
 
@@ -129,6 +138,7 @@ const LoginPage: React.FC = () => {
     <>
       <title>LOGIN</title>
       <div className="min-h-screen flex items-center justify-center bg-lightTeal">
+        <ToastContainer position="top-right" autoClose={5000} />
         <form
           onSubmit={handleSubmit}
           className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full"
@@ -169,10 +179,36 @@ const LoginPage: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full bg-darkGreen text-white py-2 px-4 rounded-md hover:bg-teal transition-all"
-            disabled={retryAfter !== null && retryAfter > 0}
+            className="w-full bg-darkGreen text-white py-2 px-4 rounded-md hover:bg-teal transition-all flex items-center justify-center"
+            disabled={(retryAfter !== null && retryAfter > 0) || isLoading}
           >
-            Login
+            {isLoading ? (
+              <span className="flex items-center">
+                <svg
+                  className="animate-spin h-5 w-5 text-white mr-2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+                Logging in...
+              </span>
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
       </div>
