@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-
+import { useRouter } from "next/router";
 const Header: React.FC = () => {
   const [user, setUser] = useState<{
     firstName: string;
     lastName: string;
+    email: string;
   } | null>(null);
 
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const router = useRouter();
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -13,6 +16,29 @@ const Header: React.FC = () => {
     }
   }, []);
 
+  const toggleDropdown = () => {
+    setDropdownVisible(!dropdownVisible);
+  };
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("/api/proxy?endpoint=/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        localStorage.removeItem("user");
+
+        router.push("/login");
+      } else {
+        console.error("Logout failed:", await response.json());
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
   return (
     <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
       <div className="px-3 py-3 lg:px-5 lg:pl-3">
@@ -52,14 +78,14 @@ const Header: React.FC = () => {
               </span>
             </a>
           </div>
-          <div className="flex items-center">
+          <div className="relative flex items-center">
             <div className="flex items-center ms-3">
               <div>
                 <button
                   type="button"
+                  onClick={toggleDropdown}
                   className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-                  aria-expanded="false"
-                  data-dropdown-toggle="dropdown-user"
+                  aria-expanded={dropdownVisible}
                 >
                   <span className="sr-only">Open user menu</span>
                   <img
@@ -69,21 +95,28 @@ const Header: React.FC = () => {
                   />
                 </button>
               </div>
-              <div
-                className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
-                id="dropdown-user"
-              >
-                <div className="px-4 py-3" role="none">
-                  <p
-                    className="text-sm text-gray-900 dark:text-white"
-                    role="none"
-                  >
-                    {user?.firstName} {user?.lastName}
-                  </p>
-                </div>
-                <ul className="py-1" role="none">
-                  {["Dashboard", "Settings", "Earnings", "Sign out"].map(
-                    (item) => (
+              {dropdownVisible && (
+                <div
+                  className="absolute right-0 mt-3 w-48 z-50 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
+                  style={{ top: "100%" }}
+                  id="dropdown-user"
+                >
+                  <div className="px-4 py-3" role="none">
+                    <p
+                      className="text-sm text-gray-900 dark:text-white"
+                      role="none"
+                    >
+                      {user?.firstName} {user?.lastName}
+                    </p>
+                    <p
+                      className="text-sm font-medium text-gray-900 truncate dark:text-gray-300"
+                      role="none"
+                    >
+                      {user?.email || "Email not available"}
+                    </p>
+                  </div>
+                  <ul className="py-1" role="none">
+                    {["Settings"].map((item) => (
                       <li key={item}>
                         <a
                           href="#"
@@ -93,10 +126,20 @@ const Header: React.FC = () => {
                           {item}
                         </a>
                       </li>
-                    )
-                  )}
-                </ul>
-              </div>
+                    ))}
+                    <li>
+                      <a
+                        href="#"
+                        onClick={handleLogout}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                        role="menuitem"
+                      >
+                        Sign out
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>

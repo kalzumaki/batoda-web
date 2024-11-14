@@ -91,7 +91,6 @@ const LoginPage: React.FC = () => {
 
         setLoginAttempts(0);
 
-        // Securely store the token
         Cookies.set("userToken", data.access_token, {
           expires: 1,
           secure: true,
@@ -103,11 +102,11 @@ const LoginPage: React.FC = () => {
           JSON.stringify({
             firstName: data.user.fname,
             lastName: data.user.lname,
+            email: data.user.email,
             user_type_id: data.user.user_type_id,
           })
         );
 
-        // Redirect to the appropriate route based on user role
         redirectToRoleBasedRoute();
       } else {
         setLoginAttempts((prevAttempts) => prevAttempts + 1);
