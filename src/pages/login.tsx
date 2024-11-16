@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import InputField from "@/components/InputField";
 import PasswordInputField from "@/components/PasswordInputField";
 import { LoginResponse } from "@/types/login";
+import { ENDPOINTS } from "./api/endpoints";
 
 const LoginPage: React.FC = () => {
   const [emailOrMobile, setEmailOrMobile] = useState<string>("");
@@ -83,7 +84,7 @@ const LoginPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`/api/proxy?endpoint=/login`, {
+      const response = await fetch(`/api/proxy?endpoint=${ENDPOINTS.LOGIN}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

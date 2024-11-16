@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { handleLogout } from "@/utils/logout";
 const Header: React.FC = () => {
   const [user, setUser] = useState<{
     firstName: string;
@@ -19,26 +20,10 @@ const Header: React.FC = () => {
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
-  const handleLogout = async () => {
-    try {
-      const response = await fetch("/api/proxy?endpoint=/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        localStorage.removeItem("user");
-
-        router.push("/login");
-      } else {
-        console.error("Logout failed:", await response.json());
-      }
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
+  const handleLogoutClick = () => {
+    router.push("/logout"); 
   };
+
   return (
     <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
       <div className="px-3 py-3 lg:px-5 lg:pl-3">
@@ -129,8 +114,7 @@ const Header: React.FC = () => {
                     ))}
                     <li>
                       <a
-                        href="#"
-                        onClick={handleLogout}
+                        onClick={handleLogoutClick}
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                         role="menuitem"
                       >

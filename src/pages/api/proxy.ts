@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { ENDPOINTS } from "./endpoints";
 
 const API_BASE_URL = process.env.API_ENDPOINT as string;
 
@@ -49,7 +50,7 @@ export default async function handler(
       }
 
       // for logout clear the cookies
-      if (endpoint === "/logout") {
+      if (endpoint === ENDPOINTS.LOGOUT) {
         res.setHeader(
           "Set-Cookie",
           "userToken=; Path=/; HttpOnly; Secure; Max-Age=0; SameSite=Strict"

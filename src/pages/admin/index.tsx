@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { GetServerSideProps } from "next";
 import Sidebar from "@/components/sidebar";
+import { authenticateUser } from "@/lib/auth";
+import { ENDPOINTS } from "../api/endpoints";
 
 const AdminDashboard = () => {
   const router = useRouter();
@@ -11,7 +13,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const token = Cookies.get("userToken");
     if (!token) {
-      router.push("/login");
+      router.push(ENDPOINTS.LOGIN);
     } else {
       setLoading(false);
     }
@@ -123,58 +125,8 @@ const AdminDashboard = () => {
   );
 };
 
-// Server-side authentication check
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const token = context.req.cookies.userToken;
-
-  if (!token) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
-
-  try {
-    const response = await fetch(`${process.env.API_ENDPOINT}/validate-token`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      return {
-        redirect: {
-          destination: "/login",
-          permanent: false,
-        },
-      };
-    }
-
-    const userData = await response.json();
-
-    if (userData.user_type_id !== 1) {
-      return {
-        redirect: {
-          destination: "/unauthorized",
-          permanent: false,
-        },
-      };
-    }
-
-    return { props: { userData } };
-  } catch (error) {
-    console.error("Error validating token:", error);
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
+  return authenticateUser(context, [1]);
 };
 
 export default AdminDashboard;
