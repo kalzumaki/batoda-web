@@ -3,8 +3,11 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { GetServerSideProps } from "next";
 import Sidebar from "@/components/sidebar";
+import LineChartComponent from "@/components/LineChart";
+import { lineChartData, lineChartOptions } from "@/utils/data/chartData";
 import { authenticateUser } from "@/lib/auth";
 import { ENDPOINTS } from "../api/endpoints";
+import { Box } from "@mui/material";
 
 const AdminDashboard = () => {
   const router = useRouter();
@@ -19,109 +22,60 @@ const AdminDashboard = () => {
     }
   }, []);
 
+  const drawerWidth = 240;
+
   if (loading) return <div>Loading...</div>;
 
   return (
-    <>
+    <Box sx={{ display: "flex", height: "100vh", overflow: "hidden" }}>
+      {/* Sidebar */}
       <Sidebar />
-      <div className="p-4 sm:ml-64 flex-grow">
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 2,
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          height: "100%",
+          overflow: "auto",
+          backgroundColor: "white",
+        }}
+      >
         <title>Admin Dashboard</title>
 
-        <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
-          {/* Top grid of three items */}
-          <div className="grid grid-cols-3 gap-4 mb-4">
-            {[...Array(3)].map((_, idx) => (
-              <div
-                key={idx}
-                className="flex items-center justify-center h-24 rounded bg-gray-50 dark:bg-gray-800"
-              >
-                <p className="text-2xl text-gray-400 dark:text-gray-500">
-                  <svg
-                    className="w-3.5 h-3.5"
-                    aria-hidden="true"
-                    fill="none"
-                    viewBox="0 0 18 18"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M9 1v16M1 9h16"
-                    />
-                  </svg>
-                </p>
-              </div>
-            ))}
-          </div>
-          <div className="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800">
-            <p className="text-2xl text-gray-400 dark:text-gray-500">
-              <svg
-                className="w-3.5 h-3.5"
-                aria-hidden="true"
-                fill="none"
-                viewBox="0 0 18 18"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M9 1v16M1 9h16"
-                />
-              </svg>
-            </p>
-          </div>
+        <Box
+          sx={{
+            mt: 7,
+            mb: 2,
+            p: 3,
+            backgroundColor: "blue",
+            borderRadius: "8px",
+            color: "white",
+            boxShadow: 3,
+          }}
+        >
+          <h3 style={{ margin: 0, fontSize: "1.5rem", fontWeight: "bold" }}>
+            Welcome Back, Admin!
+          </h3>
+          <p style={{ marginTop: "8px", fontSize: "0.9rem" }}>
+            Here is a quick summary of your platform's performance this month.
+            Scroll down for detailed charts and reports.
+          </p>
+        </Box>
 
-          {/* Bottom grid of four items */}
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            {[...Array(4)].map((_, idx) => (
-              <div
-                key={idx}
-                className="flex items-center justify-center h-28 rounded bg-gray-50 dark:bg-gray-800"
-              >
-                <p className="text-2xl text-gray-400 dark:text-gray-500">
-                  <svg
-                    className="w-3.5 h-3.5"
-                    aria-hidden="true"
-                    fill="none"
-                    viewBox="0 0 18 18"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M9 1v16M1 9h16"
-                    />
-                  </svg>
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* Another large item */}
-          <div className="flex items-center justify-center h-48 mb-4 rounded bg-gray-50 dark:bg-gray-800">
-            <p className="text-2xl text-gray-400 dark:text-gray-500">
-              <svg
-                className="w-3.5 h-3.5"
-                aria-hidden="true"
-                fill="none"
-                viewBox="0 0 18 18"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M9 1v16M1 9h16"
-                />
-              </svg>
-            </p>
-          </div>
-        </div>
-      </div>
-    </>
+        {/* Chart */}
+        <Box
+          sx={{
+            p: 1,
+            backgroundColor: "white",
+            borderRadius: "8px",
+            boxShadow: 3,
+          }}
+        >
+          <LineChartComponent data={lineChartData} options={lineChartOptions} />
+        </Box>
+      </Box>
+    </Box>
   );
 };
 
