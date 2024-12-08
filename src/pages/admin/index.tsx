@@ -8,16 +8,33 @@ import { lineChartData, lineChartOptions } from "@/utils/data/chartData";
 import { authenticateUser } from "@/lib/auth";
 import { ENDPOINTS } from "../api/endpoints";
 import { Box } from "@mui/material";
-
 const AdminDashboard = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [fname, setFname] = useState("");
+
+  const handleStartDateChange = (date: Date | null) => {
+    console.log("Start Date:", date);
+  };
+
+  const handleEndDateChange = (date: Date | null) => {
+    console.log("End Date:", date);
+  };
 
   useEffect(() => {
     const token = Cookies.get("userToken");
-    if (!token) {
+    const userData = localStorage.getItem("user");
+    if (!token || !userData) {
       router.push(ENDPOINTS.LOGIN);
     } else {
+      try {
+        const user = JSON.parse(userData);
+        setFname(user.firstName);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+        router.push(ENDPOINTS.LOGIN);
+      }
       setLoading(false);
     }
   }, []);
@@ -42,7 +59,6 @@ const AdminDashboard = () => {
         }}
       >
         <title>Admin Dashboard</title>
-
         <Box
           sx={{
             mt: 7,
@@ -55,12 +71,9 @@ const AdminDashboard = () => {
           }}
         >
           <h3 style={{ margin: 0, fontSize: "1.5rem", fontWeight: "bold" }}>
-            Welcome Back, Admin!
+            Welcome Back, {fname}!
           </h3>
-          <p style={{ marginTop: "8px", fontSize: "0.9rem" }}>
-            Here is a quick summary of your platform's performance this month.
-            Scroll down for detailed charts and reports.
-          </p>
+
         </Box>
 
         {/* Chart */}
@@ -70,6 +83,7 @@ const AdminDashboard = () => {
             backgroundColor: "white",
             borderRadius: "8px",
             boxShadow: 3,
+            height: "400px",
           }}
         >
           <LineChartComponent data={lineChartData} options={lineChartOptions} />
