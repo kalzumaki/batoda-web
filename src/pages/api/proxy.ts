@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { ENDPOINTS } from "./endpoints";
 
 const API_BASE_URL = process.env.API_ENDPOINT as string;
-
+const API_STORAGE = process.env.API_STORAGE as string;
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse

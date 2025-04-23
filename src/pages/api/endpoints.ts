@@ -3,5 +3,7 @@ export const ENDPOINTS = {
     REGISTER: '/register',
     VALIDATE_TOKEN: '/validate-token',
     LOGOUT: '/logout',
-    UNAUTHORIZED: '/unauthorized'
+    UNAUTHORIZED: '/unauthorized',
+    USERS_TOKEN : '/users/token',
+
 }

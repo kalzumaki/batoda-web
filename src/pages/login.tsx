@@ -112,6 +112,7 @@ const LoginPage: React.FC = () => {
             lastName: data.user.lname,
             email: data.user.email,
             user_type_id: data.user.user_type_id,
+            profile: data.user.profile,
           })
         );
 

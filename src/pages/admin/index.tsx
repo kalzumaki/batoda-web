@@ -8,10 +8,14 @@ import { lineChartData, lineChartOptions } from "@/utils/data/chartData";
 import { authenticateUser } from "@/lib/auth";
 import { ENDPOINTS } from "../api/endpoints";
 import { Box } from "@mui/material";
+import CustomSidebar from "@/components/sidebar/Sidebar";
+import Layout from "@/components/Layout";
+import DBHeader from "@/components/admin/db_header";
 const AdminDashboard = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [fname, setFname] = useState("");
+  const userType = "admin";
 
   const handleStartDateChange = (date: Date | null) => {
     console.log("Start Date:", date);
@@ -44,52 +48,10 @@ const AdminDashboard = () => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <Box sx={{ display: "flex", height: "100vh", overflow: "hidden" }}>
-      {/* Sidebar */}
-      <Sidebar />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 2,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          height: "100%",
-          overflow: "auto",
-          backgroundColor: "white",
-        }}
-      >
-        <title>Admin Dashboard</title>
-        <Box
-          sx={{
-            mt: 7,
-            mb: 2,
-            p: 3,
-            backgroundColor: "blue",
-            borderRadius: "8px",
-            color: "white",
-            boxShadow: 3,
-          }}
-        >
-          <h3 style={{ margin: 0, fontSize: "1.5rem", fontWeight: "bold" }}>
-            Welcome Back, {fname}!
-          </h3>
-
-        </Box>
-
-        {/* Chart */}
-        <Box
-          sx={{
-            p: 1,
-            backgroundColor: "white",
-            borderRadius: "8px",
-            boxShadow: 3,
-            height: "400px",
-          }}
-        >
-          <LineChartComponent data={lineChartData} options={lineChartOptions} />
-        </Box>
-      </Box>
-    </Box>
+    <Layout userType={userType}>
+      <DBHeader />
+      {/* other content */}
+    </Layout>
   );
 };
 
