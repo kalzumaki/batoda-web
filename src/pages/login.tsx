@@ -18,12 +18,9 @@ const LoginPage: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const savedEmail = sessionStorage.getItem("emailOrMobile") || "";
-    setEmailOrMobile(savedEmail);
-
     const token = Cookies.get("userToken");
     if (token) {
-      redirectToRoleBasedRoute();
+      redirectToRoleBasedRoute(); // Redirect if the user is authenticated
     }
   }, []);
 
@@ -45,7 +42,7 @@ const LoginPage: React.FC = () => {
     }
   }, [retryAfter]);
 
-  const redirectToRoleBasedRoute = () => {
+  const redirectToRoleBasedRoute = async () => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       const { user_type_id } = JSON.parse(storedUser);
@@ -57,10 +54,15 @@ const LoginPage: React.FC = () => {
         5: "/auditor",
       };
       if (userRoutes[user_type_id]) {
-        router.push(userRoutes[user_type_id]).then(() => {
-          setIsLoading(false);
-          toast.success("Logged in successfully!");
-        });
+        // Set loading state to true before redirecting
+        setIsLoading(true);
+
+        // Perform the redirection
+        await router.replace(userRoutes[user_type_id]);
+
+        // After redirection, stop loading
+        setIsLoading(false);
+        toast.success("Logged in successfully!");
       }
     } else {
       setIsLoading(false);
@@ -116,7 +118,7 @@ const LoginPage: React.FC = () => {
           })
         );
 
-        redirectToRoleBasedRoute();
+        redirectToRoleBasedRoute(); // Redirect after successful login
       } else {
         setLoginAttempts((prevAttempts) => prevAttempts + 1);
         toast.error(data.message || "Invalid credentials. Please try again.");

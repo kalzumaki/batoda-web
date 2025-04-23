@@ -1,9 +1,18 @@
 export const ENDPOINTS = {
-    LOGIN: '/login',
-    REGISTER: '/register',
-    VALIDATE_TOKEN: '/validate-token',
-    LOGOUT: '/logout',
-    UNAUTHORIZED: '/unauthorized',
-    USERS_TOKEN : '/users/token',
-
-}
+  LOGIN: "/login",
+  REGISTER: "/register",
+  VALIDATE_TOKEN: "/validate-token",
+  LOGOUT: "/logout",
+  UNAUTHORIZED: "/unauthorized",
+  USERS_TOKEN: "/users/token",
+  GET_DAILY_BALANCE: "/batoda-bank/daily-balance",
+  GET_MONTHLY_REVENUE: "/batoda-bank/monthly-revenue",
+  GET_YEARLY_REVENUE: "/batoda-bank/yearly-revenue",
+  GET_BANK_RECORD_BY_DATE: (startDate: string, endDate: string) =>
+    `/batoda-banks?start_date=${startDate}&end_date=${endDate}`,
+  GET_AUTHENTICATED_USERS: "/authenticated-users",
+  GET_USERS: "/users",
+  APPROVE_USER: (id: number) => `/approve-user/user_id=${id}`,
+  BLOCK_USER: (id: number) => `/users/${id}/block`,
+  UNBLOCK_USER: (id: number) => `/users/${id}/unblock`,
+};
