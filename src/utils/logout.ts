@@ -17,6 +17,7 @@ export const handleLogout = async (router: ReturnType<typeof useRouter>) => {
     const response = await fetch(`/api/proxy?endpoint=${ENDPOINTS.LOGOUT}`, {
       method: "POST",
       headers: {
+        // Accept: "application/json",
         "Content-Type": "application/json",
       },
     });

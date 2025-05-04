@@ -1,8 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { ENDPOINTS } from "./endpoints";
 
-const API_BASE_URL = process.env.API_ENDPOINT as string;
-const API_STORAGE = process.env.API_STORAGE as string;
+const API_BASE_URL = process.env.API_BASE_URL as string;
+const API_STORAGE = process.env.NEXT_PUBLIC_API_STORAGE as string;
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -12,14 +13,18 @@ export default async function handler(
 
   const appKey = process.env.APP_KEY;
   const appSecret = process.env.APP_SECRET;
+
   const authToken = req.cookies.userToken || headers.authorization || "";
+
 
   if (!appKey || !appSecret) {
     console.error("Missing App Key or App Secret");
     return res.status(500).json({ error: "Missing App Key or App Secret" });
   }
 
-  const apiUrl = new URL(`${API_BASE_URL}${endpoint}`);
+  const apiUrl = new URL(
+    `${API_BASE_URL.replace(/\/$/, "")}/${endpoint.replace(/^\//, "")}`
+  );
 
   try {
     const fetchOptions: RequestInit = {
@@ -27,6 +32,7 @@ export default async function handler(
       headers: {
         "App-Key": appKey,
         "App-Secret": appSecret,
+        Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: `Bearer ${authToken}`,
       },
@@ -34,7 +40,6 @@ export default async function handler(
     };
 
     console.log("API URL:", apiUrl.toString());
-    // console.log('Fetch options:', fetchOptions);  // console for the apikey and others
 
     const response = await fetch(apiUrl.toString(), fetchOptions);
 
@@ -49,7 +54,6 @@ export default async function handler(
         });
       }
 
-      // for logout clear the cookies
       if (endpoint === ENDPOINTS.LOGOUT) {
         res.setHeader(
           "Set-Cookie",

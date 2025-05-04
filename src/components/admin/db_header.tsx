@@ -22,7 +22,8 @@ const DBHeader = () => {
           setUserName(fname || "User");
 
           if (profile) {
-            const fullImageUrl = `${process.env.NEXT_PUBLIC_API_STORAGE}/storage/${profile}`;
+            const fullImageUrl = `${process.env.NEXT_PUBLIC_API_STORAGE}storage/${profile}`;
+            console.log('PROFILE LINK:',fullImageUrl)
             if (
               fullImageUrl.startsWith("http://") ||
               fullImageUrl.startsWith("https://")

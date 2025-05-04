@@ -1,3 +1,4 @@
+import { ENDPOINTS } from "@/pages/api/endpoints";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -12,7 +13,7 @@ export async function middleware(request: NextRequest) {
 
   try {
     // Validate the token by calling the Laravel API endpoint
-    const response = await fetch(`${process.env.API_ENDPOINT}/validate-token`, {
+    const response = await fetch(`${process.env.API_BASE_URL}${ENDPOINTS.VALIDATE_TOKEN}`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

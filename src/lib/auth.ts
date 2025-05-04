@@ -17,13 +17,16 @@ export const authenticateUser = async (
   }
 
   try {
-    const response = await fetch(`${process.env.API_ENDPOINT}${ENDPOINTS.VALIDATE_TOKEN}`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      `${process.env.API_BASE_URL}${ENDPOINTS.VALIDATE_TOKEN}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
       return {
