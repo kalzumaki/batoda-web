@@ -16,7 +16,7 @@ import Cookies from "js-cookie";
 import { ENDPOINTS } from "@/pages/api/endpoints";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import { startOfMonth, endOfMonth } from "date-fns";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -34,8 +34,9 @@ interface BankRecord {
 }
 
 const DbChart: React.FC = () => {
-  const [startDate, setStartDate] = useState<Date>(new Date("2025-04-01"));
-  const [endDate, setEndDate] = useState<Date>(new Date("2025-04-30"));
+  const today = new Date();
+  const [startDate, setStartDate] = useState<Date>(startOfMonth(today));
+  const [endDate, setEndDate] = useState<Date>(endOfMonth(today));
   const [records, setRecords] = useState<BankRecord[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 

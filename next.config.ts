@@ -6,8 +6,8 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
     domains: [
-      "avatar.iran.liara.run",             // for avatar fallback
-      "zna0brw6skqo.share.zrok.io",        // for your storage API
+      "avatar.iran.liara.run", // for avatar fallback
+      "f4ne4e55o2zd.share.zrok.io", // for your storage API
     ],
   },
 };

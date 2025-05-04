@@ -7,7 +7,7 @@ const UsersPage = () => {
     const userType = "admin";
   return (
     <Layout userType={userType}>
-
+      <title>USERS</title>
     <div className="flex-1 overflow-y-auto">
      <UsersHeader />
      <UsersBody />

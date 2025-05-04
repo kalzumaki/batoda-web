@@ -15,4 +15,6 @@ export const ENDPOINTS = {
   APPROVE_USER: (id: number) => `/approve-user/user_id=${id}`,
   BLOCK_USER: (id: number) => `/users/${id}/block`,
   UNBLOCK_USER: (id: number) => `/users/${id}/unblock`,
+  COUNT_ACTIVE_USERS: '/active-officers/count',
+  COUNT_TOTAL_DRIVER_DISPATCHER: '/driver-dispatcher/count'
 };

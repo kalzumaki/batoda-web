@@ -32,7 +32,7 @@ const PasswordInputField: React.FC<PasswordInputFieldProps> = ({
         onClick={toggleShowPassword}
         className="absolute mt-7 mr-2 inset-y-0 right-2 flex items-center text-gray-600"
       >
-        {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+        {showPassword ? <FiEye size={20} /> : <FiEyeOff size={20} /> }
       </button>
     </div>
   );

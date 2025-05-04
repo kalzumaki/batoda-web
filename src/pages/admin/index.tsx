@@ -25,7 +25,6 @@ const AdminDashboard = () => {
       try {
         const user = JSON.parse(userData);
         setFname(user.firstName);
-
       } catch (error) {
         console.error("Error parsing user data:", error);
         router.push(ENDPOINTS.LOGIN);
@@ -33,10 +32,9 @@ const AdminDashboard = () => {
     }
   }, []);
 
- 
-
   return (
     <Layout userType={userType}>
+      <title> ADMIN</title>
       <div className="flex-1 overflow-y-auto">
         <DBHeader />
         <DbBody />

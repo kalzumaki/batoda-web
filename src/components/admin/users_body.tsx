@@ -17,17 +17,39 @@ interface User {
   is_approved: number;
   email_verified_at: string | null;
   deleted_at: string | null;
+  user_valid_id?: {
+    id_number: string;
+    front_image: string;
+    back_image: string;
+  };
+  has_brgy_clearance?: {
+    image: string;
+  };
 }
 
 const UsersBody: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [modalImages, setModalImages] = useState<string[]>([]);
+  const [modalTitle, setModalTitle] = useState("");
+
+  const openModal = (title: string, images: string[]) => {
+    setModalTitle(title);
+    setModalImages(images);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setModalImages([]);
+    setModalTitle("");
+  };
 
   const fetchUsers = async () => {
     try {
       const token = Cookies.get("userToken");
-
       if (!token) {
         setError("User token missing. Please login again.");
         toast.error("User token missing. Please login again.");
@@ -40,12 +62,6 @@ const UsersBody: React.FC = () => {
           "Content-Type": "application/json",
         },
       });
-
-      if (res.status === 401) {
-        toast.error("Session expired. Please login again.");
-        setError("Unauthorized access.");
-        return;
-      }
 
       const data = await res.json();
 
@@ -69,7 +85,6 @@ const UsersBody: React.FC = () => {
   const updateApprovalStatus = async (id: number) => {
     try {
       const token = Cookies.get("userToken");
-
       const res = await fetch(
         `/api/proxy?endpoint=${ENDPOINTS.APPROVE_USER(id)}`,
         {
@@ -85,14 +100,8 @@ const UsersBody: React.FC = () => {
       const data = await res.json();
 
       if (data.status) {
-        setUsers((prev) =>
-          prev.map((user) =>
-            user.id === id ? { ...user, is_approved: 1 } : user
-          )
-        );
-
         toast.success("User approved successfully!");
-        await fetchUsers();
+        fetchUsers();
       } else {
         toast.error(data.message || "Failed to approve user.");
       }
@@ -105,7 +114,6 @@ const UsersBody: React.FC = () => {
   const updateBlockStatus = async (id: number, block: boolean) => {
     try {
       const token = Cookies.get("userToken");
-
       const endpoint = block
         ? ENDPOINTS.BLOCK_USER(id)
         : ENDPOINTS.UNBLOCK_USER(id);
@@ -121,21 +129,22 @@ const UsersBody: React.FC = () => {
       const data = await res.json();
 
       if (data.status) {
-        setUsers((prev) =>
-          prev.map((user) =>
-            user.id === id
-              ? { ...user, deleted_at: block ? new Date().toISOString() : null }
-              : user
-          )
-        );
-        toast.success(`User has been ${block ? "blocked" : "restored"}`);
+        toast.success(`User ${block ? "blocked" : "unblocked"} successfully!`);
+        fetchUsers();
       } else {
-        toast.error(data.message || `Failed to ${block ? "block" : "restore"} user.`);
+        toast.error(
+          data.message || `Failed to ${block ? "block" : "unblock"} user.`
+        );
       }
     } catch (err) {
       toast.error("An unexpected error occurred.");
       console.error(err);
     }
+  };
+
+  const getProxiedImageUrl = (path: string) => {
+    const fullImageUrl = `${process.env.NEXT_PUBLIC_API_STORAGE}storage/${path}`;
+    return `/api/image-proxy?url=${encodeURIComponent(fullImageUrl)}`;
   };
 
   if (loading)
@@ -159,7 +168,9 @@ const UsersBody: React.FC = () => {
               <th className="py-3 px-5 border text-left">User Type</th>
               <th className="py-3 px-5 border text-left">Approved</th>
               <th className="py-3 px-5 border text-left">Email Verified</th>
-              <th className="py-3 px-5 border text-left">Blocked</th>
+              <th className="py-3 px-5 border text-left">Valid ID</th>
+              <th className="py-3 px-5 border text-left">Brgy Clearance</th>
+              <th className="py-3 px-5 border text-left">Actions</th>
             </tr>
           </thead>
           <tbody className="text-black">
@@ -184,35 +195,81 @@ const UsersBody: React.FC = () => {
                     {user.user_type.name}
                   </td>
                   <td className="py-3 px-5 border">
-                    {isPassenger ? (
-                      "Auto-approved"
-                    ) : user.is_approved === 1 ? (
-                      "Approved"
-                    ) : (
-                      <select
-                        onChange={() => updateApprovalStatus(user.id)}
-                        className="border rounded px-2 py-1 text-sm"
+                    {user.is_approved === 1 ? "Approved" : "Pending"}
+                  </td>
+                  <td className="py-3 px-5 border">
+                    {user.email_verified_at ? "Yes" : "No"}
+                  </td>
+
+                  {/* Valid ID */}
+                  <td className="py-3 px-5 border">
+                    {user.user_valid_id ? (
+                      <button
+                        onClick={() =>
+                          openModal("Valid ID", [
+                            getProxiedImageUrl(
+                              user.user_valid_id?.front_image || ""
+                            ),
+                            getProxiedImageUrl(
+                              user.user_valid_id?.back_image || ""
+                            ),
+                          ])
+                        }
+                        className="text-blue-600 underline text-sm"
                       >
-                        <option value="">Select</option>
-                        <option value="1">Approve</option>
-                      </select>
+                        View ID
+                      </button>
+                    ) : (
+                      "—"
                     )}
                   </td>
 
+                  {/* Brgy Clearance */}
                   <td className="py-3 px-5 border">
-                    {user.email_verified_at ? "Yes" : "X"}
+                    {user.has_brgy_clearance?.image ? (
+                      <button
+                        onClick={() =>
+                          openModal("Barangay Clearance", [
+                            getProxiedImageUrl(
+                              user.has_brgy_clearance?.image || ""
+                            ),
+                          ])
+                        }
+                        className="text-blue-600 underline text-sm"
+                      >
+                        View Clearance
+                      </button>
+                    ) : (
+                      "—"
+                    )}
                   </td>
-                  <td className="py-3 px-5 border">
-                    <select
-                      value={isBlocked ? "blocked" : "active"}
-                      onChange={(e) =>
-                        updateBlockStatus(user.id, e.target.value === "blocked")
-                      }
-                      className="border rounded px-2 py-1 text-sm"
-                    >
-                      <option value="active">Restore</option>
-                      <option value="blocked">Blocked</option>
-                    </select>
+
+                  {/* Actions */}
+                  <td className="py-3 px-5 border text-center space-y-2">
+                    {!isPassenger && user.is_approved !== 1 && (
+                      <button
+                        onClick={() => updateApprovalStatus(user.id)}
+                        className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700"
+                      >
+                        Approve
+                      </button>
+                    )}
+
+                    {isBlocked ? (
+                      <button
+                        onClick={() => updateBlockStatus(user.id, false)}
+                        className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+                      >
+                        Unblock
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => updateBlockStatus(user.id, true)}
+                        className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700"
+                      >
+                        Block
+                      </button>
+                    )}
                   </td>
                 </tr>
               );
@@ -220,6 +277,33 @@ const UsersBody: React.FC = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Image Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] md:w-[500px] max-h-[90vh] overflow-y-auto">
+            <h2 className="text-lg font-semibold mb-4">{modalTitle}</h2>
+            <div className="space-y-4">
+              {modalImages.map((src, index) => (
+                <img
+                  key={index}
+                  src={src}
+                  alt={`Modal Image ${index + 1}`}
+                  className="w-full object-contain border"
+                />
+              ))}
+            </div>
+            <div className="mt-4 text-right">
+              <button
+                onClick={closeModal}
+                className="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
