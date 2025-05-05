@@ -5,33 +5,7 @@ import Cookies from "js-cookie";
 import { ENDPOINTS } from "@/pages/api/endpoints";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
-
-interface User {
-  id: number;
-  fname: string;
-  lname: string;
-  email: string;
-  mobile_number: number;
-  user_type: {
-    id: number;
-    name: string;
-  };
-  is_approved: number;
-  email_verified_at: string | null;
-  deleted_at: string | null;
-  user_valid_id?: {
-    id_number: string;
-    front_image: string;
-    back_image: string;
-  };
-  has_brgy_clearance?: {
-    image: string;
-  };
-  tricycle?: {
-    driver_id: number;
-    tricycle_number: string;
-  };
-}
+import { User } from "@/types/user";
 
 const UsersBody: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
