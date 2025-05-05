@@ -175,7 +175,7 @@ const DriverDispatcherBody = () => {
             title="Driver & Dispatcher Report"
             buttonLabel="Download as PDF"
           >
-            <div className="rounded-lg shadow">
+            <div className="rounded-lg shadow overflow-x-auto">
               <table className="min-w-full table-auto border border-[#3d5554] bg-white">
                 <thead className="bg-[#3d5554] text-white">
                   <tr>

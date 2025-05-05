@@ -7,7 +7,8 @@ import {
   FaCoins,
   FaHistory,
   FaCog,
-  FaUserFriends
+  FaUserFriends,
+  FaListAlt
 } from "react-icons/fa";
 
 export const menuConfig: Record<
@@ -23,13 +24,13 @@ export const menuConfig: Record<
     { label: "Users Approval", path: "/admin/users", icon: <BsFillPersonFill /> },
     { label: "Drivers & Dispatchers", path: "/admin/drivers_dispatchers", icon: <FaUserTie /> },
     { label: "Officers", path: "/admin/officers", icon: <FaUserFriends /> },
+    { label: "Reservations", path: "/admin/reservations", icon: <FaListAlt /> },
     { label: "Report", path: "/report", icon: <FaChartBar /> },
     {
       label: "Fare & Contribution",
       path: "/fare-contribution",
       icon: <FaCoins />,
     },
-    { label: "History", path: "/history", icon: <FaHistory /> },
     { label: "Settings", path: "/settings", icon: <FaCog /> },
   ],
   president: [
