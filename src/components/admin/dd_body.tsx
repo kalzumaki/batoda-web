@@ -6,6 +6,7 @@ import { ENDPOINTS } from "@/pages/api/endpoints";
 import { toast } from "react-toastify";
 import { DriverDispatcher } from "@/types/user";
 import FilterBar from "../FilterBar";
+import PrintToPDF from "../PrintToPdf";
 
 const DriverDispatcherBody = () => {
   const [users, setUsers] = useState<DriverDispatcher[]>([]);
@@ -100,18 +101,18 @@ const DriverDispatcherBody = () => {
         user.email.toLowerCase().includes(search.toLowerCase()) ||
         user.mobile_number.includes(search);
 
-    //   const date =
-    //     user.created_at && !isNaN(new Date(user.created_at).getTime())
-    //       ? new Date(user.created_at)
-    //       : null;
+      //   const date =
+      //     user.created_at && !isNaN(new Date(user.created_at).getTime())
+      //       ? new Date(user.created_at)
+      //       : null;
 
-    //   const dateMatch =
-    //     (!dateRange.from ||
-    //       (date &&
-    //         dateRange.from &&
-    //         date.getTime() >= dateRange.from.getTime())) &&
-    //     (!dateRange.to ||
-    //       (date && dateRange.to && date.getTime() <= dateRange.to.getTime()));
+      //   const dateMatch =
+      //     (!dateRange.from ||
+      //       (date &&
+      //         dateRange.from &&
+      //         date.getTime() >= dateRange.from.getTime())) &&
+      //     (!dateRange.to ||
+      //       (date && dateRange.to && date.getTime() <= dateRange.to.getTime()));
 
       const userTypeMatch =
         !filters.user_type ||
@@ -169,68 +170,74 @@ const DriverDispatcherBody = () => {
         </p>
       ) : (
         <div className="p-6">
-          <div className="overflow-x-auto rounded-lg shadow">
-            <table className="min-w-full table-auto border border-[#3d5554] bg-white">
-              <thead className="bg-[#3d5554] text-white">
-                <tr>
-                  <th className="py-3 px-5 border text-left">Full Name</th>
-                  <th className="py-3 px-5 border text-left">Birthday</th>
-                  <th className="py-3 px-5 border text-left">Email</th>
-                  <th className="py-3 px-5 border text-left">Mobile</th>
-                  <th className="py-3 px-5 border text-left">Address</th>
-                  <th className="py-3 px-5 border text-left">User Type</th>
-                  <th className="py-3 px-5 border text-left">Active</th>
-                  <th className="py-3 px-5 border text-left">Last Login</th>
-                  <th className="py-3 px-5 border text-left">Tricycle No.</th>
-                  <th className="py-3 px-5 border text-left">Action</th>
-                </tr>
-              </thead>
-              <tbody className="text-black">
-                {filteredUsers.map((user) => (
-                  <tr
-                    key={user.id}
-                    className={`transition-colors ${
-                      user.deleted_at
-                        ? "bg-red-100 hover:bg-red-200"
-                        : "hover:bg-gray-100"
-                    }`}
-                  >
-                    <td className="py-3 px-5 border">{user.full_name}</td>
-                    <td className="py-3 px-5 border">{user.birthday}</td>
-                    <td className="py-3 px-5 border">{user.email}</td>
-                    <td className="py-3 px-5 border">{user.mobile_number}</td>
-                    <td className="py-3 px-5 border">{user.address}</td>
-                    <td className="py-3 px-5 border capitalize">
-                      {user.user_type}
-                    </td>
-                    <td className="py-3 px-5 border">
-                      {user.is_active ? "Yes" : "No"}
-                    </td>
-                    <td className="py-3 px-5 border">
-                      {user.last_login_at
-                        ? new Date(user.last_login_at).toLocaleString()
-                        : "—"}
-                    </td>
-                    <td className="py-3 px-5 border">
-                      {user.tricycle_number ?? "—"}
-                    </td>
-                    <td className="py-3 px-5 border">
-                      <button
-                        onClick={() => toggleBlock(user.id, user.deleted_at)}
-                        className={`px-3 py-1 rounded text-sm ${
-                          user.deleted_at
-                            ? "bg-green-600 hover:bg-green-700 text-white"
-                            : "bg-red-600 hover:bg-red-700 text-white"
-                        }`}
-                      >
-                        {user.deleted_at ? "Unblock" : "Block"}
-                      </button>
-                    </td>
+          <PrintToPDF
+            fileName="drivers_dispatchers_report.pdf"
+            title="Driver & Dispatcher Report"
+            buttonLabel="Download as PDF"
+          >
+            <div className="rounded-lg shadow">
+              <table className="min-w-full table-auto border border-[#3d5554] bg-white">
+                <thead className="bg-[#3d5554] text-white">
+                  <tr>
+                    <th className="py-3 px-5 border text-left">Full Name</th>
+                    <th className="py-3 px-5 border text-left">Birthday</th>
+                    <th className="py-3 px-5 border text-left">Email</th>
+                    <th className="py-3 px-5 border text-left">Mobile</th>
+                    <th className="py-3 px-5 border text-left">Address</th>
+                    <th className="py-3 px-5 border text-left">User Type</th>
+                    <th className="py-3 px-5 border text-left">Active</th>
+                    <th className="py-3 px-5 border text-left">Last Login</th>
+                    <th className="py-3 px-5 border text-left">Tricycle No.</th>
+                    <th className="py-3 px-5 border text-left">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="text-black">
+                  {filteredUsers.map((user) => (
+                    <tr
+                      key={user.id}
+                      className={`transition-colors ${
+                        user.deleted_at
+                          ? "bg-red-100 hover:bg-red-200"
+                          : "hover:bg-gray-100"
+                      }`}
+                    >
+                      <td className="py-3 px-5 border">{user.full_name}</td>
+                      <td className="py-3 px-5 border">{user.birthday}</td>
+                      <td className="py-3 px-5 border">{user.email}</td>
+                      <td className="py-3 px-5 border">{user.mobile_number}</td>
+                      <td className="py-3 px-5 border">{user.address}</td>
+                      <td className="py-3 px-5 border capitalize">
+                        {user.user_type}
+                      </td>
+                      <td className="py-3 px-5 border">
+                        {user.is_active ? "Yes" : "No"}
+                      </td>
+                      <td className="py-3 px-5 border">
+                        {user.last_login_at
+                          ? new Date(user.last_login_at).toLocaleString()
+                          : "—"}
+                      </td>
+                      <td className="py-3 px-5 border">
+                        {user.tricycle_number ?? "—"}
+                      </td>
+                      <td className="py-3 px-5 border">
+                        <button
+                          onClick={() => toggleBlock(user.id, user.deleted_at)}
+                          className={`px-3 py-1 rounded text-sm ${
+                            user.deleted_at
+                              ? "bg-green-600 hover:bg-green-700 text-white"
+                              : "bg-red-600 hover:bg-red-700 text-white"
+                          }`}
+                        >
+                          {user.deleted_at ? "Unblock" : "Block"}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </PrintToPDF>
         </div>
       )}
     </>
