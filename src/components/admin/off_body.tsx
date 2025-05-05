@@ -6,7 +6,7 @@ import { ENDPOINTS } from "@/pages/api/endpoints";
 import { toast } from "react-toastify";
 import { Officers } from "@/types/user";
 import PrintToPDF from "../PrintToPdf";
-import AddOfficerModal from "../AddOfficerModal";
+import SubHeaderButton from "../SubHeaderButton";
 
 const userTypeMap: Record<number, string> = {
   2: "President",
@@ -92,8 +92,12 @@ const OfficersBody = () => {
 
   return (
     <div className="p-6">
-      <PrintToPDF title="List of Officers" fileName="officers-list.pdf" buttonLabel="Download Officers">
-      <AddOfficerModal />
+      <PrintToPDF
+        title="List of Officers"
+        fileName="officers-list.pdf"
+        buttonLabel="Download Officers"
+      >
+       <SubHeaderButton />
         <table className="min-w-full table-auto border border-[#3d5554] bg-white">
           <thead className="bg-[#3d5554] text-white">
             <tr>

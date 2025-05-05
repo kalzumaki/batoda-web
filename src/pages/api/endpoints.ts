@@ -19,4 +19,5 @@ export const ENDPOINTS = {
   COUNT_TOTAL_DRIVER_DISPATCHER: '/driver-dispatcher/count',
   GET_ALL_DRIVERS_DISPATCHERS: '/drivers-dispatchers',
   GET_OFFICERS: '/leadership-users',
+  GET_ALL_USERS: '/get/users',
 };

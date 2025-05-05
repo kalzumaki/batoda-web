@@ -63,14 +63,12 @@ const AddOfficerModal: React.FC = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-4">
-        <button
-          onClick={handleToggleModal}
-          className="px-4 py-2 bg-[#3d5554] text-white rounded-md hover:bg-[#2c3f3e] transition-all"
-        >
-          Add Officer
-        </button>
-      </div>
+      <button
+        onClick={handleToggleModal}
+        className="px-4 py-2 bg-[#3d5554] text-white rounded-md hover:bg-[#2c3f3e] transition-all"
+      >
+        Add Officer
+      </button>
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
