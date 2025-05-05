@@ -4,12 +4,14 @@ import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { ENDPOINTS } from "@/pages/api/endpoints";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 interface User {
   id: number;
   fname: string;
   lname: string;
   email: string;
+  mobile_number: number;
   user_type: {
     id: number;
     name: string;
@@ -25,14 +27,19 @@ interface User {
   has_brgy_clearance?: {
     image: string;
   };
+  tricycle?: {
+    driver_id: number;
+    tricycle_number: string;
+  };
 }
 
 const UsersBody: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [modalImages, setModalImages] = useState<string[]>([]); // For storing images to show in the modal
-  const [modalOpen, setModalOpen] = useState<boolean>(false); // To control modal visibility
+  const [message, setMessage] = useState<string>("");
+  const [modalImages, setModalImages] = useState<string[]>([]);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [modalTitle, setModalTitle] = useState<string>("");
   const [modalIdNumber, setModalIdNumber] = useState<string>("");
 
@@ -53,16 +60,11 @@ const UsersBody: React.FC = () => {
         },
       });
 
-      if (res.status === 401) {
-        toast.error("Session expired. Please login again.");
-        setError("Unauthorized access.");
-        return;
-      }
-
       const data = await res.json();
 
       if (data.status) {
         setUsers(data.users);
+        setMessage(data.message || "");
       } else {
         setError(data.message || "Failed to fetch users.");
       }
@@ -73,6 +75,7 @@ const UsersBody: React.FC = () => {
       setLoading(false);
     }
   };
+
   const openModal = (images: string[], title: string, idNumber?: string) => {
     const fullUrls = images.map((image) => {
       const isFullUrl =
@@ -80,8 +83,6 @@ const UsersBody: React.FC = () => {
       const rawUrl = isFullUrl
         ? image
         : `${process.env.NEXT_PUBLIC_API_STORAGE}storage/${image}`;
-
-      // Returning the final image URL with the proxy
       return `/api/image-proxy?url=${encodeURIComponent(rawUrl)}`;
     });
 
@@ -96,7 +97,7 @@ const UsersBody: React.FC = () => {
     setModalImages([]);
   };
 
-  const updateApprovalStatus = async (id: number) => {
+  const approveUser = async (id: number) => {
     try {
       const token = Cookies.get("userToken");
 
@@ -115,54 +116,10 @@ const UsersBody: React.FC = () => {
       const data = await res.json();
 
       if (data.status) {
-        setUsers((prev) =>
-          prev.map((user) =>
-            user.id === id ? { ...user, is_approved: 1 } : user
-          )
-        );
-
         toast.success("User approved successfully!");
         await fetchUsers();
       } else {
         toast.error(data.message || "Failed to approve user.");
-      }
-    } catch (err) {
-      toast.error("An unexpected error occurred.");
-      console.error(err);
-    }
-  };
-
-  const updateBlockStatus = async (id: number, block: boolean) => {
-    try {
-      const token = Cookies.get("userToken");
-
-      const endpoint = block
-        ? ENDPOINTS.BLOCK_USER(id)
-        : ENDPOINTS.UNBLOCK_USER(id);
-
-      const res = await fetch(`/api/proxy?endpoint=${endpoint}`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await res.json();
-
-      if (data.status) {
-        setUsers((prev) =>
-          prev.map((user) =>
-            user.id === id
-              ? { ...user, deleted_at: block ? new Date().toISOString() : null }
-              : user
-          )
-        );
-        toast.success(`User has been ${block ? "blocked" : "restored"}`);
-      } else {
-        toast.error(
-          data.message || `Failed to ${block ? "block" : "restore"} user.`
-        );
       }
     } catch (err) {
       toast.error("An unexpected error occurred.");
@@ -183,6 +140,9 @@ const UsersBody: React.FC = () => {
 
   if (error) return <p className="text-red-500 text-center py-4">{error}</p>;
 
+  if (users.length === 0)
+    return <p className="text-center text-gray-600 py-4">{message}</p>;
+
   return (
     <div className="p-6">
       <div className="overflow-x-auto rounded-lg shadow">
@@ -192,118 +152,90 @@ const UsersBody: React.FC = () => {
               <th className="py-3 px-5 border text-left">ID</th>
               <th className="py-3 px-5 border text-left">Full Name</th>
               <th className="py-3 px-5 border text-left">Email</th>
+              <th className="py-3 px-5 border text-left">Mobile Number</th>
               <th className="py-3 px-5 border text-left">User Type</th>
-              <th className="py-3 px-5 border text-left">Approved</th>
+              {/* <th className="py-3 px-5 border text-left w-[120px]">
+                Tricycle Number
+              </th> */}
               <th className="py-3 px-5 border text-left">Email Verified</th>
-              <th className="py-3 px-5 border text-left">Valid ID</th>
-              <th className="py-3 px-5 border text-left">Barangay Clearance</th>
-              <th className="py-3 px-5 border text-left">Blocked</th>
+              <th className="py-3 px-5 border text-left w-[120px]">Valid ID</th>
+              <th className="py-3 px-5 border text-left w-[160px]">
+                Barangay Clearance
+              </th>
+              <th className="py-3 px-5 border text-left">Action</th>
             </tr>
           </thead>
           <tbody className="text-black">
-            {users.map((user) => {
-              const isBlocked = user.deleted_at !== null;
-              const isPassenger =
-                user.user_type.name.toLowerCase() === "passenger";
-
-              return (
-                <tr
-                  key={user.id}
-                  className={`hover:bg-gray-100 transition-colors ${
-                    isBlocked ? "bg-red-200" : ""
-                  }`}
-                >
-                  <td className="py-3 px-5 border">{user.id}</td>
-                  <td className="py-3 px-5 border">
-                    {user.fname} {user.lname}
-                  </td>
-                  <td className="py-3 px-5 border">{user.email}</td>
-                  <td className="py-3 px-5 border capitalize">
-                    {user.user_type.name}
-                  </td>
-                  <td className="py-3 px-5 border">
-                    {isPassenger ? (
-                      "Auto-approved"
-                    ) : user.is_approved === 1 ? (
-                      "Approved"
-                    ) : (
-                      <select
-                        onChange={() => updateApprovalStatus(user.id)}
-                        className="border rounded px-2 py-1 text-sm"
-                      >
-                        <option value="">Select</option>
-                        <option value="1">Approve</option>
-                      </select>
-                    )}
-                  </td>
-
-                  <td className="py-3 px-5 border">
-                    {user.email_verified_at ? "Yes" : "X"}
-                  </td>
-
-                  {/* Valid ID Column */}
-                  <td className="py-3 px-5 border">
-                    {user.user_valid_id ? (
-                      <button
-                        onClick={() =>
-                          openModal(
-                            [
-                              user.user_valid_id?.front_image || "",
-                              user.user_valid_id?.back_image || "",
-                            ],
-                            "Valid ID",
-                            user.user_valid_id?.id_number
-                          )
-                        }
-                        className="text-blue-600 underline text-sm"
-                      >
-                        View ID
-                      </button>
-                    ) : (
-                      "—"
-                    )}
-                  </td>
-
-                  {/* Barangay Clearance Column */}
-                  <td className="py-3 px-5 border">
-                    {user.has_brgy_clearance ? (
-                      <button
-                        onClick={() =>
-                          openModal(
-                            [user.has_brgy_clearance?.image || ""],
-                            "Brgy Clearance"
-                          )
-                        }
-                        className="text-blue-600 underline text-sm"
-                      >
-                        View Clearance
-                      </button>
-                    ) : (
-                      "—"
-                    )}
-                  </td>
-
-                  {/* Block/Restore Column */}
-                  <td className="py-3 px-5 border">
-                    <select
-                      value={isBlocked ? "blocked" : "active"}
-                      onChange={(e) =>
-                        updateBlockStatus(user.id, e.target.value === "blocked")
+            {users.map((user) => (
+              <tr key={user.id} className="hover:bg-gray-100 transition-colors">
+                <td className="py-3 px-5 border">{user.id}</td>
+                <td className="py-3 px-5 border">
+                  {user.fname} {user.lname}
+                </td>
+                <td className="py-3 px-5 border">{user.email}</td>
+                <td className="py-3 px-5 border">{user.mobile_number}</td>
+                <td className="py-3 px-5 border capitalize">
+                  {user.user_type.name}
+                </td>
+                {/* <td className="py-3 px-5 border">
+                  {user.tricycle?.tricycle_number
+                    ? user.tricycle.tricycle_number
+                    : "-"}
+                </td> */}
+                <td className="py-3 px-5 border">
+                  {user.email_verified_at ? "Yes" : "X"}
+                </td>
+                <td className="py-3 px-5 border">
+                  {user.user_valid_id ? (
+                    <button
+                      onClick={() =>
+                        openModal(
+                          [
+                            user.user_valid_id?.front_image || "",
+                            user.user_valid_id?.back_image || "",
+                          ],
+                          "Valid ID",
+                          user.user_valid_id?.id_number
+                        )
                       }
-                      className="border rounded px-2 py-1 text-sm"
+                      className="text-blue-600 underline text-sm"
                     >
-                      <option value="active">Restore</option>
-                      <option value="blocked">Blocked</option>
-                    </select>
-                  </td>
-                </tr>
-              );
-            })}
+                      View ID
+                    </button>
+                  ) : (
+                    "—"
+                  )}
+                </td>
+                <td className="py-3 px-5 border">
+                  {user.has_brgy_clearance ? (
+                    <button
+                      onClick={() =>
+                        openModal(
+                          [user.has_brgy_clearance?.image || ""],
+                          "Brgy Clearance"
+                        )
+                      }
+                      className="text-blue-600 underline text-sm"
+                    >
+                      View Clearance
+                    </button>
+                  ) : (
+                    "—"
+                  )}
+                </td>
+                <td className="py-3 px-5 border">
+                  <button
+                    onClick={() => approveUser(user.id)}
+                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"
+                  >
+                    Approve
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
-
-      {/* Modal for displaying images */}
 
       {modalOpen && (
         <div
@@ -317,11 +249,11 @@ const UsersBody: React.FC = () => {
             <h2 className="text-xl font-semibold mb-4 text-center text-black">
               {modalTitle}
             </h2>
-            <p className="text-center text-gray-700 mb-4">
-              ID Number: <span className="font-medium">{modalIdNumber}</span>
-            </p>
-
-            {/* Spinner or Images */}
+            {modalIdNumber && (
+              <p className="text-center text-gray-700 mb-4">
+                ID Number: <span className="font-medium">{modalIdNumber}</span>
+              </p>
+            )}
             {modalImages.length === 0 ? (
               <div className="flex justify-center items-center h-40">
                 <div className="w-10 h-10 border-4 border-gray-300 border-t-[#3d5554] rounded-full animate-spin"></div>

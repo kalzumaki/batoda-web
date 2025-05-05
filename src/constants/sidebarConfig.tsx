@@ -20,7 +20,7 @@ export const menuConfig: Record<
   admin: [
     { label: "Dashboard", path: "/admin", icon: <MdOutlineDashboard /> },
     { label: "Users Approval", path: "/admin/users", icon: <BsFillPersonFill /> },
-    // { label: "Dispatcher", path: "/dispatcher", icon: <FaUserTie /> },
+    { label: "Drivers & Dispatchers", path: "/admin/drivers_dispatchers", icon: <FaUserTie /> },
     // { label: "Finances", path: "/finances", icon: <FaMoneyBillAlt /> },
     { label: "Report", path: "/report", icon: <FaChartBar /> },
     {

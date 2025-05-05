@@ -1,21 +1,19 @@
-import React from 'react'
-import { ENDPOINTS } from '../api/endpoints'
-import Layout from '@/components/Layout';
-import UsersHeader from '@/components/admin/users_header';
-import UsersBody from '@/components/admin/users_body';
+import React from "react";
+import { ENDPOINTS } from "../api/endpoints";
+import Layout from "@/components/Layout";
+import UsersHeader from "@/components/admin/users_header";
+import UsersBody from "@/components/admin/users_body";
 const UsersPage = () => {
-    const userType = "admin";
+  const userType = "admin";
   return (
     <Layout userType={userType}>
       <title>USERS</title>
-    <div className="flex-1 overflow-y-auto">
-     <UsersHeader />
-     <UsersBody />
+      <div className="flex-1 overflow-y-auto">
+        <UsersHeader />
+        <UsersBody />
+      </div>
+    </Layout>
+  );
+};
 
-    </div>
-
-</Layout>
-  )
-}
-
-export default UsersPage
+export default UsersPage;

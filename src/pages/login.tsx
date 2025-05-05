@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import InputField from "@/components/InputField";
 import PasswordInputField from "@/components/PasswordInputField";
@@ -90,7 +90,7 @@ const LoginPage: React.FC = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-        //   Accept: "application/json",
+          //   Accept: "application/json",
         },
         body: JSON.stringify({
           email_or_mobile: emailOrMobile,
@@ -143,7 +143,6 @@ const LoginPage: React.FC = () => {
     <>
       <title>LOGIN</title>
       <div className="min-h-screen flex items-center justify-center bg-lightTeal">
-        <ToastContainer position="top-right" autoClose={5000} />
         <form
           onSubmit={handleSubmit}
           className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full"
