@@ -5,13 +5,14 @@ import Cookies from "js-cookie";
 import { ENDPOINTS } from "@/pages/api/endpoints";
 import { Officers } from "@/types/user";
 import { userManagement } from "@/constants/userTypeMap";
-
-
+import { X } from "lucide-react";
+import UserQRPreviewModal from "./UserQRPreviewModal";
 
 const UsersGenerateQRModal: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [users, setUsers] = useState<Officers[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<Officers | null>(null);
 
   const toggleModal = () => setIsOpen(!isOpen);
 
@@ -61,66 +62,72 @@ const UsersGenerateQRModal: React.FC = () => {
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl p-6 relative">
+            <button
+              onClick={toggleModal}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
             <h2 className="text-xl font-semibold text-[#3d5554] mb-4">
               Users List
             </h2>
 
             {loading ? (
-              <p className="text-gray-600">Loading...</p>
+              <div className="flex justify-center items-center h-64">
+                <div className="w-10 h-10 border-4 border-gray-300 border-t-[#3d5554] rounded-full animate-spin"></div>
+              </div>
             ) : (
-              <table className="w-full text-sm text-left text-gray-600 border">
-                <thead className="bg-gray-100 text-[#3d5554]">
-                  <tr>
-                    <th className="px-4 py-2 border">Name</th>
-                    <th className="px-4 py-2 border">Email</th>
-                    <th className="px-4 py-2 border">Mobile</th>
-                    <th className="px-4 py-2 border">Role</th>
-                    <th className="px-4 py-2 border text-center">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.length === 0 ? (
+              <div className="max-h-[60vh] overflow-y-auto border rounded-md">
+                <table className="w-full text-sm text-left text-gray-600">
+                  <thead className="bg-gray-100 text-[#3d5554]">
                     <tr>
-                      <td colSpan={4} className="px-4 py-3 text-center">
-                        No users found.
-                      </td>
+                      <th className="px-4 py-2 border">Name</th>
+                      <th className="px-4 py-2 border">Email</th>
+                      <th className="px-4 py-2 border">Mobile</th>
+                      <th className="px-4 py-2 border">Role</th>
+                      <th className="px-4 py-2 border text-center">Action</th>
                     </tr>
-                  ) : (
-                    users.map((user) => (
-                      <tr key={user.id} className="border-t">
-                        <td className="px-4 py-2">
-                          {user.fname} {user.lname}
-                        </td>
-                        <td className="px-4 py-2">{user.email}</td>
-                        <td className="px-4 py-2">{user.mobile_number}</td>
-                        <td className="px-4 py-2">
-                          {userManagement[user.user_type_id]}
-                        </td>
-                        <td className="px-4 py-2 text-center">
-                          <button
-                            onClick={() =>
-                              console.log("Generate QR for:", user)
-                            }
-                            className="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-xs"
-                          >
-                            Generate QR
-                          </button>
+                  </thead>
+                  <tbody>
+                    {users.length === 0 ? (
+                      <tr>
+                        <td colSpan={4} className="px-4 py-3 text-center">
+                          No users found.
                         </td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+                    ) : (
+                      users.map((user) => (
+                        <tr key={user.id} className="border-t">
+                          <td className="px-4 py-2">
+                            {user.fname} {user.lname}
+                          </td>
+                          <td className="px-4 py-2">{user.email}</td>
+                          <td className="px-4 py-2">{user.mobile_number}</td>
+                          <td className="px-4 py-2">
+                            {userManagement[user.user_type_id]}
+                          </td>
+                          <td className="px-4 py-2 text-center">
+                            <button
+                              onClick={() => setSelectedUser(user)}
+                              className="text-white bg-[#3d5554] hover:bg-[#2c3f3e] transition-all px-3 py-1 rounded text-xs"
+                            >
+                              Generate QR
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
             )}
-
-            <div className="flex justify-end mt-4">
-              <button
-                onClick={toggleModal}
-                className="mt-4 px-4 py-2 border rounded-md text-gray-600 hover:bg-gray-100"
-              >
-                Close
-              </button>
-            </div>
+            {selectedUser && (
+              <UserQRPreviewModal
+                user={selectedUser}
+                onClose={() => setSelectedUser(null)}
+              />
+            )}
           </div>
         </div>
       )}

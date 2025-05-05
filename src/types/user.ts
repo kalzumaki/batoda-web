@@ -49,10 +49,9 @@ export interface Officers {
   address: string;
   birthday: string;
   user_type_id: number;
-  profile: string;
+  profile: string | null;
   deleted_at: string;
   is_active: number;
   last_login_at: string;
+  qr_code: string | null;
 }
-
-
