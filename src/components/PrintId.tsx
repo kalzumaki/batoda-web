@@ -1,73 +1,51 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { jsPDF } from "jspdf";
-import { autoTable } from "jspdf-autotable";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
-interface PrintToPDFProps {
+interface PrintIDProps {
   fileName?: string;
-  title?: string;
   buttonLabel?: string;
   children: React.ReactNode;
 }
 
-const PrintToPDF: React.FC<PrintToPDFProps> = ({
-  fileName = "download.pdf",
-  title = "Report",
-  buttonLabel = "Download PDF",
+const PrintID: React.FC<PrintIDProps> = ({
+  fileName = "id_card.pdf",
+  buttonLabel = "Download",
   children,
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
     if (!contentRef.current) return;
     setIsLoading(true);
 
     try {
-      const doc = new jsPDF({
-        orientation: "landscape",
+      const canvas = await html2canvas(contentRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: null,
+      });
+
+      const imgData = canvas.toDataURL("image/png");
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+
+      const pdfWidth = imgWidth * 0.264583;
+      const pdfHeight = imgHeight * 0.264583;
+
+      const pdf = new jsPDF({
+        orientation: pdfWidth > pdfHeight ? "landscape" : "portrait",
         unit: "mm",
-        format: "a4",
+        format: [pdfWidth, pdfHeight],
       });
 
-      const content = contentRef.current;
-
-      const headers = Array.from(content.querySelectorAll("table th"))
-        .map((th) => th.textContent || "")
-        .slice(0, -1);
-
-      const rows = Array.from(content.querySelectorAll("table tbody tr")).map(
-        (tr) =>
-          Array.from(tr.children)
-            .map((td) => td.textContent || "")
-            .slice(0, -1)
-      );
-
-      // Title
-      doc.setFontSize(18);
-      doc.text(title, 14, 15);
-
-      // Timestamp
-      const timestamp = new Date().toLocaleString();
-      doc.setFontSize(10);
-      doc.text(
-        `Generated: ${timestamp}`,
-        doc.internal.pageSize.getWidth() - 60,
-        15
-      );
-
-      autoTable(doc, {
-        head: [headers],
-        body: rows,
-        startY: 25,
-        margin: { top: 20 },
-        styles: { font: "helvetica", fontSize: 10 },
-      });
-
-      doc.save(fileName);
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(fileName);
     } catch (error) {
-      console.error("Error generating PDF:", error);
+      console.error("Failed to generate PDF:", error);
     } finally {
       setIsLoading(false);
     }
@@ -113,4 +91,4 @@ const PrintToPDF: React.FC<PrintToPDFProps> = ({
   );
 };
 
-export default PrintToPDF;
+export default PrintID;
