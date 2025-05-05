@@ -79,7 +79,7 @@ const DriverDispatcherBody = () => {
       const data = await res.json();
 
       if (data.status) {
-        toast.success(deletedAt ? "User Unblocked." : "User Blocked.");
+        toast.success(data.message || "Status updated.");
         fetchUsers();
       } else {
         toast.error(data.message || "Action failed.");
@@ -185,7 +185,7 @@ const DriverDispatcherBody = () => {
                     <th className="py-3 px-5 border text-left">Mobile</th>
                     <th className="py-3 px-5 border text-left">Address</th>
                     <th className="py-3 px-5 border text-left">User Type</th>
-                    <th className="py-3 px-5 border text-left">Active</th>
+                    <th className="py-3 px-5 border text-left">Status</th>
                     <th className="py-3 px-5 border text-left">Last Login</th>
                     <th className="py-3 px-5 border text-left">Tricycle No.</th>
                     <th className="py-3 px-5 border text-left">Action</th>
@@ -210,7 +210,15 @@ const DriverDispatcherBody = () => {
                         {user.user_type}
                       </td>
                       <td className="py-3 px-5 border">
-                        {user.is_active ? "Yes" : "No"}
+                        {user.is_active ? (
+                          <span className="text-green-600 font-medium">
+                            Online
+                          </span>
+                        ) : (
+                          <span className="text-red-600 font-medium">
+                            Offline
+                          </span>
+                        )}
                       </td>
                       <td className="py-3 px-5 border">
                         {user.last_login_at

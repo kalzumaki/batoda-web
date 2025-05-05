@@ -157,7 +157,7 @@ const UsersBody: React.FC = () => {
                     : "-"}
                 </td> */}
                 <td className="py-3 px-5 border">
-                  {user.email_verified_at ? "Yes" : "X"}
+                  {user.email_verified_at ? "Verified" : "Not Verified"}
                 </td>
                 <td className="py-3 px-5 border">
                   {user.user_valid_id ? (

@@ -39,3 +39,18 @@ export interface DriverDispatcher {
   deleted_at: string | null;
   created_at: string | null;
 }
+
+export interface Officers {
+  id: number;
+  fname: string;
+  lname: string;
+  email: string;
+  mobile_number: number;
+  address: string;
+  birthday: string;
+  user_type_id: number;
+  profile: string;
+  deleted_at: string;
+  is_active: number;
+  last_login_at: string;
+}

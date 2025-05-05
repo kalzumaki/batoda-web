@@ -1,6 +1,7 @@
 import React from "react";
 import Layout from "@/components/Layout";
 import ReusableHeader from "@/components/ReusableHeader";
+import OfficersBody from "@/components/admin/off_body";
 const Officers = () => {
   const userType = "admin";
   return (
@@ -11,6 +12,7 @@ const Officers = () => {
         title="List of Officers"
         subtitle="Manage and view officers details in this page."
       />
+      <OfficersBody />
     </Layout>
   );
 };
