@@ -7,6 +7,7 @@ import {
   FaCoins,
   FaHistory,
   FaCog,
+  FaUserFriends
 } from "react-icons/fa";
 
 export const menuConfig: Record<
@@ -21,7 +22,7 @@ export const menuConfig: Record<
     { label: "Dashboard", path: "/admin", icon: <MdOutlineDashboard /> },
     { label: "Users Approval", path: "/admin/users", icon: <BsFillPersonFill /> },
     { label: "Drivers & Dispatchers", path: "/admin/drivers_dispatchers", icon: <FaUserTie /> },
-    // { label: "Finances", path: "/finances", icon: <FaMoneyBillAlt /> },
+    { label: "Officers", path: "/admin/officers", icon: <FaUserFriends /> },
     { label: "Report", path: "/report", icon: <FaChartBar /> },
     {
       label: "Fare & Contribution",

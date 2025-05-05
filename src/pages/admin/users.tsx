@@ -1,15 +1,17 @@
 import React from "react";
-import { ENDPOINTS } from "../api/endpoints";
 import Layout from "@/components/Layout";
-import UsersHeader from "@/components/admin/users_header";
 import UsersBody from "@/components/admin/users_body";
+import ReusableHeader from "@/components/ReusableHeader";
 const UsersPage = () => {
   const userType = "admin";
   return (
     <Layout userType={userType}>
       <title>USERS</title>
       <div className="flex-1 overflow-y-auto">
-        <UsersHeader />
+        <ReusableHeader
+          title="Users Approval"
+          subtitle="Manage and view new Drivers & Dispatchers details in this section."
+        />
         <UsersBody />
       </div>
     </Layout>
