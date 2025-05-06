@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { ENDPOINTS } from "@/pages/api/endpoints";
 import { toast } from "react-toastify";
@@ -34,6 +34,19 @@ const ReservationBody = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  const handleSearchChange = (search: string) => {
+    setSearch(search);
+  };
+
+  const handleCustomFilterChange = (filterKey: string, value: string) => {
+    setFilters((prevFilters) => ({ ...prevFilters, [filterKey]: value }));
+  };
+
+  const handleSortChange = (sortValue: string) => {
+    setSortOrder(sortValue);
+  };
+
   useEffect(() => {
     const fetchUserAndReservations = async () => {
       try {
@@ -97,6 +110,38 @@ const ReservationBody = () => {
     fetchUserAndReservations();
   }, []);
 
+  // Apply Filters to the Passenger Data
+  const filteredPassengers = passengers
+  .filter((item) => {
+    // Search filter
+    const searchMatch =
+      (item.passenger_full_name &&
+        item.passenger_full_name.toLowerCase().includes(search.toLowerCase())) ||
+      (item.driver_full_name &&
+        item.driver_full_name.toLowerCase().includes(search.toLowerCase())) ||
+      (item.dispatcher_full_name &&
+        item.dispatcher_full_name.toLowerCase().includes(search.toLowerCase())) ||
+      ("reference_no" in item && item.reference_no.toLowerCase().includes(search.toLowerCase())); // Check if reference_no exists
+
+    // Filter by ticket status
+    const statusMatch =
+      !filters.status || item.ticket_status === filters.status;
+
+    return searchMatch && statusMatch;
+  })
+  .sort((a, b) => {
+    // Sorting logic for date
+    const aDate = "transaction_date" in a ? new Date(a.transaction_date) : new Date(a.created_at);
+    const bDate = "transaction_date" in b ? new Date(b.transaction_date) : new Date(b.created_at);
+
+    if (sortOrder === "newest") {
+      return bDate.getTime() - aDate.getTime();
+    } else {
+      return aDate.getTime() - bDate.getTime();
+    }
+  });
+
+
   if (loading)
     return (
       <div className="flex justify-center items-center h-64">
@@ -108,6 +153,22 @@ const ReservationBody = () => {
 
   return (
     <>
+      <FilterBar
+        onSearchChange={handleSearchChange}
+        onCustomFilterChange={handleCustomFilterChange}
+        customFilters={[
+          {
+            label: "Status",
+            key: "status",
+            options: [
+              { label: "Reserved", value: "reserved" },
+              { label: "Cancelled", value: "cancelled" },
+            ],
+          },
+        ]}
+        showDateRange={false} // If you want to include date range filters later, set this to true
+      />
+
       <PrintReservationPDF
         title="Reservation History Report"
         fileName="reservation_report.pdf"
@@ -123,9 +184,7 @@ const ReservationBody = () => {
                   <th className="py-3 px-5 border text-left">Ticket No.</th>
                   <th className="py-3 px-5 border text-left">Status</th>
                   <th className="py-3 px-5 border text-left">Reference No.</th>
-                  <th className="py-3 px-5 border text-left">
-                    Seats Available
-                  </th>
+                  <th className="py-3 px-5 border text-left">Seats Available</th>
                   <th className="py-3 px-5 border text-left">Passenger</th>
                   <th className="py-3 px-5 border text-left">Driver</th>
                   <th className="py-3 px-5 border text-left">Tricycle #</th>
@@ -138,20 +197,14 @@ const ReservationBody = () => {
                 </tr>
               </thead>
               <tbody className="text-black">
-                {loading ? (
-                  <tr>
-                    <td colSpan={13} className="text-center py-4">
-                      Loading...
-                    </td>
-                  </tr>
-                ) : passengers.length === 0 ? (
+                {filteredPassengers.length === 0 ? (
                   <tr>
                     <td colSpan={13} className="text-center py-4">
                       No reservation history found.
                     </td>
                   </tr>
                 ) : (
-                  passengers.map((item, index) => {
+                  filteredPassengers.map((item, index) => {
                     const isCancelled = item.ticket_status === "cancelled";
                     return (
                       <tr
@@ -172,7 +225,6 @@ const ReservationBody = () => {
                         <td className="py-3 px-5 border">
                           {"reference_no" in item ? item.reference_no : "—"}
                         </td>
-
                         <td className="py-3 px-5 border">
                           {item.number_of_seats_avail}
                         </td>
@@ -197,7 +249,6 @@ const ReservationBody = () => {
                             : "—"}
                         </td>
                         <td className="py-3 px-5 border w-40 align-top">
-                          {/* Screen-only button */}
                           <div className="print:hidden">
                             <button
                               onClick={() =>
