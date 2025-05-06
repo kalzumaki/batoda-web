@@ -1,5 +1,5 @@
 import { MdOutlineDashboard } from "react-icons/md";
-import { BsFillPersonFill } from "react-icons/bs";
+import { BsFillPeopleFill, BsFillPersonFill } from "react-icons/bs";
 import {
   FaUserTie,
   FaMoneyBillAlt,
@@ -32,6 +32,11 @@ export const menuConfig: Record<
       icon: <FaUserTie />,
     },
     { label: "Officers", path: "/admin/officers", icon: <FaUserFriends /> },
+    {
+      label: "Passengers",
+      path: "/admin/passengers",
+      icon: <BsFillPeopleFill />,
+    },
     { label: "Reservations", path: "/admin/reservations", icon: <FaListAlt /> },
     {
       label: "Finances",
