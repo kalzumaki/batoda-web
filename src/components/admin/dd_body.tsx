@@ -12,7 +12,8 @@ const DriverDispatcherBody = () => {
   const [users, setUsers] = useState<DriverDispatcher[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [fname, setFname] = useState<string>("");
+  const [lname, setLname] = useState<string>("");
   // Filters
   const [search, setSearch] = useState<string>("");
   const [dateRange, setDateRange] = useState<{
@@ -29,9 +30,30 @@ const DriverDispatcherBody = () => {
       const token = Cookies.get("userToken");
 
       if (!token) {
-        setError("User token missing. Please login again.");
-        toast.error("User token missing. Please login again.");
+        toast.error("User token is missing.");
         return;
+      }
+
+      // Fetch user profile
+      const userRes = await fetch(
+        `/api/proxy?endpoint=${ENDPOINTS.USERS_TOKEN}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const userData = await userRes.json();
+
+      if (userRes.ok && userData.status) {
+        const data = userData.data;
+        const { fname, lname } = data;
+
+        setFname(fname);
+        setLname(lname);
+      } else {
+        toast.error(userData.message || "Failed to fetch user profile.");
       }
 
       const response = await fetch(
@@ -174,6 +196,8 @@ const DriverDispatcherBody = () => {
             fileName="drivers_dispatchers_report.pdf"
             title="Driver & Dispatcher Report"
             buttonLabel="Download as PDF"
+            generatedByFname={fname}
+            generatedByLname={lname}
           >
             <div className="rounded-lg shadow overflow-x-auto">
               <table className="min-w-full table-auto border border-[#3d5554] bg-white">

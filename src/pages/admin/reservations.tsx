@@ -1,6 +1,7 @@
 import React from "react";
 import Layout from "@/components/Layout";
 import ReusableHeader from "@/components/ReusableHeader";
+import ReservationBody from "@/components/admin/res_body";
 
 const Reservations = () => {
   const userType = "admin";
@@ -12,6 +13,7 @@ const Reservations = () => {
         title="Reservations"
         subtitle="View all seats and reservations details in this page."
       />
+      <ReservationBody />
     </Layout>
   );
 };

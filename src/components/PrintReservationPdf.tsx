@@ -2,9 +2,8 @@
 
 import React, { useRef, useState } from "react";
 import { jsPDF } from "jspdf";
-import { autoTable } from "jspdf-autotable";
-
-interface PrintToPDFProps {
+import autoTable from "jspdf-autotable";
+interface PrintReservationPDFProps {
   fileName?: string;
   title?: string;
   buttonLabel?: string;
@@ -13,10 +12,10 @@ interface PrintToPDFProps {
   generatedByLname?: string;
 }
 
-const PrintToPDF: React.FC<PrintToPDFProps> = ({
-  fileName = "download.pdf",
-  title = "Report",
-  buttonLabel = "Download PDF",
+const PrintReservationPDF: React.FC<PrintReservationPDFProps> = ({
+  fileName = "reservation_report.pdf",
+  title = "Reservation History",
+  buttonLabel = "Download Reservation PDF",
   children,
   generatedByFname,
   generatedByLname,
@@ -32,20 +31,19 @@ const PrintToPDF: React.FC<PrintToPDFProps> = ({
       const doc = new jsPDF({
         orientation: "landscape",
         unit: "mm",
-        format: "a4",
+        format: [215.9, 330.2], // Long bond paper: 8.5 x 13 inches
       });
-
       const content = contentRef.current;
 
-      const headers = Array.from(content.querySelectorAll("table th"))
-        .map((th) => th.textContent || "")
-        .slice(0, -1);
+      const headers = Array.from(
+        content.querySelectorAll("table thead tr th")
+      ).map((th) => th.textContent?.trim() || "");
 
       const rows = Array.from(content.querySelectorAll("table tbody tr")).map(
         (tr) =>
-          Array.from(tr.children)
-            .map((td) => td.textContent || "")
-            .slice(0, -1)
+          Array.from(tr.querySelectorAll("td")).map(
+            (td) => td.textContent?.trim() || ""
+          )
       );
 
       // Title
@@ -60,6 +58,7 @@ const PrintToPDF: React.FC<PrintToPDFProps> = ({
         doc.internal.pageSize.getWidth() - 60,
         15
       );
+
       if (generatedByFname || generatedByLname) {
         const fullName = `${generatedByFname ?? ""} ${
           generatedByLname ?? ""
@@ -67,17 +66,27 @@ const PrintToPDF: React.FC<PrintToPDFProps> = ({
         doc.text(`By: ${fullName}`, doc.internal.pageSize.getWidth() - 60, 20);
       }
 
+      // Table
       autoTable(doc, {
         head: [headers],
         body: rows,
         startY: 25,
         margin: { top: 20 },
-        styles: { font: "helvetica", fontSize: 10 },
+        styles: { fontSize: 8, cellPadding: 2 },
+        headStyles: { fillColor: [61, 85, 84] },
+        didDrawPage: (data) => {
+          doc.setFontSize(10);
+          doc.text(
+            `Page ${doc.getNumberOfPages()}`,
+            14,
+            doc.internal.pageSize.getHeight() - 10
+          );
+        },
       });
 
       doc.save(fileName);
     } catch (error) {
-      console.error("Error generating PDF:", error);
+      console.error("Error generating reservation PDF:", error);
     } finally {
       setIsLoading(false);
     }
@@ -123,4 +132,4 @@ const PrintToPDF: React.FC<PrintToPDFProps> = ({
   );
 };
 
-export default PrintToPDF;
+export default PrintReservationPDF;

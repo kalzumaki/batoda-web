@@ -21,4 +21,5 @@ export const ENDPOINTS = {
   GET_OFFICERS: "/leadership-users",
   GET_ALL_USERS: "/get/users",
   GENERATE_QR: (id: number) => `/generate-qr/${id}`,
+  GET_RESERVATION_HISTORY: '/reservations/receipt',
 };

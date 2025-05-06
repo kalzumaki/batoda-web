@@ -19,11 +19,38 @@ const OfficersBody = () => {
   const [officers, setOfficers] = useState<Officers[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [fname, setFname] = useState<string>("");
+  const [lname, setLname] = useState<string>("");
   const fetchOfficers = async () => {
     try {
       const token = Cookies.get("userToken");
-      if (!token) throw new Error("User token missing.");
+
+      if (!token) {
+        toast.error("User token is missing.");
+        return;
+      }
+
+      // Fetch user profile
+      const userRes = await fetch(
+        `/api/proxy?endpoint=${ENDPOINTS.USERS_TOKEN}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const userData = await userRes.json();
+
+      if (userRes.ok && userData.status) {
+        const data = userData.data;
+        const { fname, lname } = data;
+
+        setFname(fname);
+        setLname(lname);
+      } else {
+        toast.error(userData.message || "Failed to fetch user profile.");
+      }
 
       const res = await fetch(`/api/proxy?endpoint=${ENDPOINTS.GET_OFFICERS}`, {
         method: "GET",
@@ -96,6 +123,8 @@ const OfficersBody = () => {
         title="List of Officers"
         fileName="officers-list.pdf"
         buttonLabel="Download Officers"
+        generatedByFname={fname}
+        generatedByLname={lname}
       >
         <SubHeaderButton />
         <div className="overflow-x-auto">
