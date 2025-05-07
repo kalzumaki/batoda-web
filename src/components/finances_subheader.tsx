@@ -36,7 +36,7 @@ const FinancesSubHeader = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [fadeIn, setFadeIn] = useState(false);
-  
+
   const latest = contribution?.history?.[0];
   const topDrivers = sales?.drivers?.slice(0, 5);
   const top5Months = contribution?.history?.slice(0, 5) || [];
@@ -124,10 +124,10 @@ const FinancesSubHeader = () => {
         backgroundColor: top5Months.map((_, idx) => {
           const colors = [
             "#2d665f",
-            "#FF5733",
-            "#DAF7A6",
-            "#FF8D1A",
             "#A60000",
+            "#DAF7A6",
+            "#FF5733",
+            "#FF8D1A",
           ];
           return colors[idx % colors.length];
         }),
@@ -143,10 +143,10 @@ const FinancesSubHeader = () => {
       {
         data: topDrivers?.map((driver) => driver.ticket_count) || [],
         backgroundColor: [
+          "#FF8D1A",
+          "#DAF7A6",
           "#2d665f",
           "#FF5733",
-          "#DAF7A6",
-          "#FF8D1A",
           "#A60000",
         ],
         borderColor: "#ffffff",

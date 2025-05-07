@@ -5,12 +5,15 @@ import { toast } from "react-toastify";
 import FilterBar from "./FilterBar";
 import PrintToPDF from "./PrintToPdf";
 import { Officers } from "@/types/user";
+
 const PassengersBody = () => {
   const [fname, setFname] = useState<string>("");
   const [lname, setLname] = useState<string>("");
   const [loading, setLoading] = useState(true);
+  const [allPassengers, setAllPassengers] = useState<Officers[]>([]);
   const [passengers, setPassengers] = useState<Officers[]>([]);
   const [error, setError] = useState<string | null>(null);
+
   const fetchUserAndPassengers = async () => {
     try {
       const token = Cookies.get("userToken");
@@ -23,37 +26,29 @@ const PassengersBody = () => {
       const userRes = await fetch(
         `/api/proxy?endpoint=${ENDPOINTS.USERS_TOKEN}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
       const userData = await userRes.json();
-
       if (userRes.ok && userData.status) {
-        const data = userData.data;
-        const { fname, lname } = data;
-
+        const { fname, lname } = userData.data;
         setFname(fname);
         setLname(lname);
       } else {
         toast.error(userData.message || "Failed to fetch user profile.");
       }
 
-      // Fetch reservations
-      const passenger = await fetch(
+      const res = await fetch(
         `/api/proxy?endpoint=${ENDPOINTS.GET_PASSENGERS}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      const data = await passenger.json();
-
-      if (passenger.ok && data.status) {
+      const data = await res.json();
+      if (res.ok && data.status) {
+        setAllPassengers(data.data);
         setPassengers(data.data);
       } else {
         throw new Error(data.message || "Failed to fetch passengers.");
@@ -65,9 +60,23 @@ const PassengersBody = () => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchUserAndPassengers();
   }, []);
+
+  const handleSearchChange = (search: string) => {
+    const lower = search.toLowerCase();
+    const filtered = allPassengers.filter(
+      (p) =>
+        p.fname.toLowerCase().includes(lower) ||
+        p.lname.toLowerCase().includes(lower) ||
+        p.mobile_number.toString().toLowerCase().includes(lower) ||
+        p.email.toLowerCase().includes(lower) ||
+        p.address.toLowerCase().includes(lower)
+    );
+    setPassengers(filtered);
+  };
 
   const toggleBlock = async (id: number, deletedAt: string) => {
     try {
@@ -97,6 +106,7 @@ const PassengersBody = () => {
       toast.error(err.message);
     }
   };
+
   if (loading)
     return (
       <div className="flex justify-center items-center h-64">
@@ -115,8 +125,9 @@ const PassengersBody = () => {
         generatedByFname={fname}
         generatedByLname={lname}
       >
-        {/* <FilterBar /> */}
-        <div className="overflow-x-auto">
+        <FilterBar onSearchChange={handleSearchChange} />
+
+        <div className="overflow-x-auto mt-4">
           <table className="min-w-full table-auto border border-[#3d5554] bg-white">
             <thead className="bg-[#3d5554] text-white">
               <tr>
@@ -168,9 +179,9 @@ const PassengersBody = () => {
                       }
                       className={`px-3 py-1 rounded text-sm ${
                         passenger.deleted_at
-                          ? "bg-green-600 hover:bg-green-700 text-white"
-                          : "bg-red-600 hover:bg-red-700 text-white"
-                      }`}
+                          ? "bg-green-600 hover:bg-green-700"
+                          : "bg-red-600 hover:bg-red-700"
+                      } text-white`}
                     >
                       {passenger.deleted_at ? "Unblock" : "Block"}
                     </button>
