@@ -120,9 +120,9 @@ const FinancesBody = () => {
                 <tr>
                   <th className="px-4 py-2 text-left">Driver</th>
                   <th className="px-4 py-2 text-left">Dispatcher</th>
-                  <th className="px-4 py-2 text-left">Balance</th>
+                  <th className="px-4 py-2 text-left">Batoda Balance</th>
                   <th className="px-4 py-2 text-left">Dispatcher Fare</th>
-                  <th className="px-4 py-2 text-left">Share</th>
+                  <th className="px-4 py-2 text-left">Dispatcher Share</th>
                   <th className="px-4 py-2 text-left">Date</th>
                   <th className="px-4 py-2 text-left">Time</th>
                 </tr>

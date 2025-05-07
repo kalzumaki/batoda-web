@@ -1,46 +1,45 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { GetServerSideProps } from "next";
+import { authenticateUser } from "@/lib/auth";
+import { ENDPOINTS } from "../api/endpoints";
+import Layout from "@/components/Layout";
+import DBHeader from "@/components/db_header";
 
 const AuditorDashboard = () => {
   const router = useRouter();
-
+  const [fname, setFname] = useState("");
+  const userType = "auditor";
   useEffect(() => {
     const token = Cookies.get("userToken");
-    console.log(token);
-    if (!token) {
-      router.push("/login"); // Redirect to login if no token is found
+    const userData = localStorage.getItem("user");
+
+    if (!token || !userData) {
+      router.push(ENDPOINTS.LOGIN);
+    } else {
+      try {
+        const user = JSON.parse(userData);
+        setFname(user.firstName);
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+        router.push(ENDPOINTS.LOGIN);
+      }
     }
-  }, [router]);
+  }, []);
 
   return (
-    <div>
-      <h1>Auditor Dashboard</h1>
-      {/* Dashboard content here */}
-    </div>
+    <Layout userType={userType}>
+      <title>AUDITOR</title>
+      <div className="flex-1 overflow-y-auto">
+        <DBHeader />
+      </div>
+    </Layout>
   );
 };
 
-// Server-side authentication check
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const token = context.req.cookies.userToken;
-
-  if (!token) {
-    // Redirect to login page if no token
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
-
-  // Optionally, you can verify the token with your API to ensure validity here
-
-  return {
-    props: {}, // Pass any data as props if needed
-  };
+  return authenticateUser(context, [5]);
 };
 
 export default AuditorDashboard;

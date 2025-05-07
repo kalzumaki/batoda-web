@@ -1,46 +1,48 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { GetServerSideProps } from "next";
+import { authenticateUser } from "@/lib/auth";
+import { ENDPOINTS } from "../api/endpoints";
+import Layout from "@/components/Layout";
+import DBHeader from "@/components/db_header";
+import DbChart from "@/components/db_chart";
+
 
 const PresidentDashboard = () => {
   const router = useRouter();
-
+  const [fname, setFname] = useState("");
+  const userType = "president"
   useEffect(() => {
     const token = Cookies.get("userToken");
-    console.log(token);
-    if (!token) {
-      router.push("/login");
+    const userData = localStorage.getItem("user");
+
+    if (!token || !userData) {
+      router.push(ENDPOINTS.LOGIN);
+    } else {
+      try {
+        const user = JSON.parse(userData);
+        setFname(user.firstName);
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+        router.push(ENDPOINTS.LOGIN);
+      }
     }
-  }, [router]);
+  }, []);
 
   return (
-    <div>
-      <h1>President Dashboard</h1>
-      {/* Dashboard content here */}
-    </div>
+    <Layout userType={userType}>
+      <title>PRESIDENT</title>
+      <div className="flex-1 overflow-y-auto">
+        <DBHeader />
+        <DbChart />
+      </div>
+    </Layout>
   );
 };
 
-// Server-side authentication check
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const token = context.req.cookies.userToken;
-
-  if (!token) {
-
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
-
-
-
-  return {
-    props: {},
-  };
+  return authenticateUser(context, [2]);
 };
 
 export default PresidentDashboard;

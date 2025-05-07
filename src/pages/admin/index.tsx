@@ -5,9 +5,9 @@ import { GetServerSideProps } from "next";
 import { authenticateUser } from "@/lib/auth";
 import { ENDPOINTS } from "../api/endpoints";
 import Layout from "@/components/Layout";
-import DBHeader from "@/components/admin/db_header";
+import DBHeader from "@/components/db_header";
 import DbBody from "@/components/admin/db_body";
-import DbChart from "@/components/admin/db_chart";
+import DbChart from "@/components/db_chart";
 
 const AdminDashboard = () => {
   const router = useRouter();

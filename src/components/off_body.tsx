@@ -21,36 +21,42 @@ const OfficersBody = () => {
   const [error, setError] = useState<string | null>(null);
   const [fname, setFname] = useState<string>("");
   const [lname, setLname] = useState<string>("");
-  const fetchOfficers = async () => {
+  const [role, setRole] = useState<number | null>(null);
+
+  const fetchUserProfile = async () => {
     try {
       const token = Cookies.get("userToken");
-
       if (!token) {
         toast.error("User token is missing.");
         return;
       }
 
-      // Fetch user profile
-      const userRes = await fetch(
-        `/api/proxy?endpoint=${ENDPOINTS.USERS_TOKEN}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await fetch(`/api/proxy?endpoint=${ENDPOINTS.USERS_TOKEN}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      const userData = await userRes.json();
-
-      if (userRes.ok && userData.status) {
-        const data = userData.data;
-        const { fname, lname } = data;
-
-        setFname(fname);
-        setLname(lname);
+      const data = await res.json();
+      if (res.ok && data.status) {
+        const user = data.data;
+        setFname(user.fname);
+        setLname(user.lname);
+        setRole(user.user_type_id);
       } else {
-        toast.error(userData.message || "Failed to fetch user profile.");
+        toast.error(data.message || "Failed to fetch user profile.");
       }
+    } catch (err: any) {
+      console.error("Error fetching profile:", err);
+      toast.error(err.message);
+    }
+  };
+
+  const fetchOfficers = async (role: number | null) => {
+    try {
+      if (role === null) return;
+      const token = Cookies.get("userToken");
+      if (!token) return;
 
       const res = await fetch(`/api/proxy?endpoint=${ENDPOINTS.GET_OFFICERS}`, {
         method: "GET",
@@ -62,7 +68,12 @@ const OfficersBody = () => {
 
       const data = await res.json();
       if (res.ok && Array.isArray(data.data)) {
-        setOfficers(data.data);
+        const filteredOfficers =
+          role === 2
+            ? data.data.filter((officer: any) => officer.user_type_id !== 2)
+            : data.data;
+
+        setOfficers(filteredOfficers);
       } else {
         throw new Error(data.message || "Failed to fetch officers.");
       }
@@ -94,7 +105,7 @@ const OfficersBody = () => {
 
       if (res.ok) {
         toast.success(data.message || "Status updated.");
-        fetchOfficers();
+        fetchOfficers(role);
       } else {
         throw new Error(data.message || "Action failed.");
       }
@@ -105,8 +116,14 @@ const OfficersBody = () => {
   };
 
   useEffect(() => {
-    fetchOfficers();
+    fetchUserProfile();
   }, []);
+
+  useEffect(() => {
+    if (role !== null) {
+      fetchOfficers(role);
+    }
+  }, [role]);
 
   if (loading)
     return (

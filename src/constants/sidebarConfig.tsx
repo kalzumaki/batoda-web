@@ -41,31 +41,54 @@ export const menuConfig: Record<
     {
       label: "Finances",
       path: "/admin/finances",
-      icon: <FaCoins />,
+      icon: <FaMoneyBillAlt />,
     },
     { label: "Reports", path: "/admin/reports", icon: <FaChartBar /> },
     { label: "Settings", path: "/admin/settings", icon: <FaCog /> },
   ],
+  //president
   president: [
-    { label: "Dashboard", path: "/index", icon: <MdOutlineDashboard /> },
-    { label: "Reports", path: "/report", icon: <FaChartBar /> },
-    { label: "Finances", path: "/finances", icon: <FaMoneyBillAlt /> },
+    { label: "Dashboard", path: "/president", icon: <MdOutlineDashboard /> },
+    {
+      label: "Users Approval",
+      path: "/president/users",
+      icon: <BsFillPersonFill />,
+    },
+    {
+      label: "Drivers & Dispatchers",
+      path: "/president/drivers_dispatchers",
+      icon: <FaUserTie />,
+    },
+    { label: "Officers", path: "/president/officers", icon: <FaUserFriends /> },
+    { label: "Settings", path: "/president/settings", icon: <FaCog /> },
   ],
   secretary: [
-    { label: "Drivers", path: "/drivers", icon: <BsFillPersonFill /> },
-    { label: "Dispatcher", path: "/dispatcher", icon: <FaUserTie /> },
-    { label: "Settings", path: "/settings", icon: <FaCog /> },
+    { label: "Dashboard", path: "/secretary", icon: <MdOutlineDashboard /> },
+    {
+      label: "Reservations",
+      path: "/secretary/reservations",
+      icon: <FaListAlt />,
+    },
+    { label: "Reports", path: "/secretary/reports", icon: <FaChartBar /> },
+    { label: "Settings", path: "/secretary/settings", icon: <FaCog /> },
   ],
   treasurer: [
-    { label: "Finances", path: "/finances", icon: <FaMoneyBillAlt /> },
+    { label: "Dashboard", path: "/treasurer", icon: <MdOutlineDashboard /> },
     {
-      label: "Fare & Contribution",
-      path: "/fare-contribution",
-      icon: <FaCoins />,
+      label: "Finances",
+      path: "/treasurer/finances",
+      icon: <FaMoneyBillAlt />,
     },
+    { label: "Settings", path: "/treasurer/settings", icon: <FaCog /> },
   ],
   auditor: [
-    { label: "History", path: "/history", icon: <FaHistory /> },
-    { label: "Report", path: "/report", icon: <FaChartBar /> },
+    { label: "Dashboard", path: "/auditor", icon: <MdOutlineDashboard /> },
+    {
+      label: "Reservations",
+      path: "/auditor/reservations",
+      icon: <FaListAlt />,
+    },
+    { label: "Reports", path: "/auditor/reports", icon: <FaChartBar /> },
+    { label: "Settings", path: "/auditor/settings", icon: <FaCog /> },
   ],
 };
