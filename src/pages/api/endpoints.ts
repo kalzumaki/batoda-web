@@ -31,4 +31,6 @@ export const ENDPOINTS = {
   UPDATE_EMAIL_SEND_OTP: "/email-verification/send-otp",
   SEND_OTP_PASSWORD_RESET: "/password-reset/send-otp",
   VERIFY_OTP_FOR_PASSWORD_RESET: "/password-reset/verify",
+  UPDATE_FARE: "/fare/update",
+  GET_FARE: "/fare",
 };
