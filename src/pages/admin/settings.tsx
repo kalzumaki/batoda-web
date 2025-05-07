@@ -1,5 +1,6 @@
 import Layout from "@/components/Layout";
 import ReusableHeader from "@/components/ReusableHeader";
+import SettingsForm from "@/components/settings_form";
 import React from "react";
 
 const Settings = () => {
@@ -12,6 +13,7 @@ const Settings = () => {
         title="Settings"
         subtitle="Update your personal details in this page."
       />
+      <SettingsForm />
     </Layout>
   );
 };

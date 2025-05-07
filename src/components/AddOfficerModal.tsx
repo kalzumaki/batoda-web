@@ -29,7 +29,16 @@ const AddOfficerModal: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    let updatedValue = value;
+
+    if (name === "mobile_number") {
+      const onlyDigits = value.replace(/\D/g, "");
+      if (onlyDigits.length > 11) return;
+      updatedValue = onlyDigits;
+    }
+
+    setFormData((prev) => ({ ...prev, [name]: updatedValue }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -107,10 +116,9 @@ const AddOfficerModal: React.FC = () => {
                   className="border border-gray-400 p-2 text-gray-700 rounded w-full placeholder-gray-600"
                 />
                 <input
-                  type="number"
+                  type="text"
                   name="mobile_number"
                   value={formData.mobile_number}
-                  maxLength={11}
                   onChange={handleChange}
                   placeholder="Mobile Number"
                   required

@@ -55,3 +55,20 @@ export interface Officers {
   last_login_at: string;
   qr_code: string | null;
 }
+
+export interface UpdateUser {
+  fname?: string | null;
+  lname?: string | null;
+  email?: string | null;
+  mobile_number?: string | null;
+  address?: string | null;
+  gender?: string | null;
+  birthday?: string | null;
+}
+
+export interface ChangePassword {
+  email: string;
+  otp: string;
+  password: string;
+  password_confirmation: string;
+}
