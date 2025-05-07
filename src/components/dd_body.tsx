@@ -5,8 +5,8 @@ import Cookies from "js-cookie";
 import { ENDPOINTS } from "@/pages/api/endpoints";
 import { toast } from "react-toastify";
 import { DriverDispatcher } from "@/types/user";
-import FilterBar from "../FilterBar";
-import PrintToPDF from "../PrintToPdf";
+import FilterBar from "./FilterBar";
+import PrintToPDF from "./PrintToPdf";
 
 const DriverDispatcherBody = () => {
   const [users, setUsers] = useState<DriverDispatcher[]>([]);

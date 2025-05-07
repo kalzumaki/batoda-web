@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "@/components/Layout";
-import DriverDispatcherBody from "@/components/admin/dd_body";
+import DriverDispatcherBody from "@/components/dd_body";
 import ReusableHeader from "@/components/ReusableHeader";
 const drivers_dispatchers = () => {
   const userType = "admin";

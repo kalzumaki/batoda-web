@@ -1,7 +1,7 @@
 import React from "react";
 import Layout from "@/components/Layout";
 import ReusableHeader from "@/components/ReusableHeader";
-import ReservationBody from "@/components/admin/res_body";
+import ReservationBody from "@/components/res_body";
 
 const Reservations = () => {
   const userType = "admin";

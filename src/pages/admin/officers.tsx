@@ -1,7 +1,7 @@
 import React from "react";
 import Layout from "@/components/Layout";
 import ReusableHeader from "@/components/ReusableHeader";
-import OfficersBody from "@/components/admin/off_body";
+import OfficersBody from "@/components/off_body";
 const Officers = () => {
   const userType = "admin";
   return (

@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "@/components/Layout";
-import UsersBody from "@/components/admin/users_body";
+import UsersBody from "@/components/users_body";
 import ReusableHeader from "@/components/ReusableHeader";
 const UsersPage = () => {
   const userType = "admin";

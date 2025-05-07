@@ -1,9 +1,9 @@
-import React from 'react'
+import React from "react";
 import Layout from "@/components/Layout";
 import ReusableHeader from "@/components/ReusableHeader";
-import PassengersBody from '@/components/admin/pass_body';
+import PassengersBody from "@/components/pass_body";
 const Passengers = () => {
-    const userType = "admin";
+  const userType = "admin";
   return (
     <Layout userType={userType}>
       <title>Passengers</title>
@@ -14,7 +14,7 @@ const Passengers = () => {
       />
       <PassengersBody />
     </Layout>
-  )
-}
+  );
+};
 
-export default Passengers
+export default Passengers;

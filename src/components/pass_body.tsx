@@ -1,27 +1,17 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { ENDPOINTS } from "@/pages/api/endpoints";
 import { toast } from "react-toastify";
+import FilterBar from "./FilterBar";
+import PrintToPDF from "./PrintToPdf";
 import { Officers } from "@/types/user";
-import PrintToPDF from "../PrintToPdf";
-import SubHeaderButton from "../SubHeaderButton";
-
-const userTypeMap: Record<number, string> = {
-  2: "President",
-  3: "Secretary",
-  4: "Treasurer",
-  5: "Auditor",
-};
-
-const OfficersBody = () => {
-  const [officers, setOfficers] = useState<Officers[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+const PassengersBody = () => {
   const [fname, setFname] = useState<string>("");
   const [lname, setLname] = useState<string>("");
-  const fetchOfficers = async () => {
+  const [loading, setLoading] = useState(true);
+  const [passengers, setPassengers] = useState<Officers[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const fetchUserAndPassengers = async () => {
     try {
       const token = Cookies.get("userToken");
 
@@ -30,7 +20,6 @@ const OfficersBody = () => {
         return;
       }
 
-      // Fetch user profile
       const userRes = await fetch(
         `/api/proxy?endpoint=${ENDPOINTS.USERS_TOKEN}`,
         {
@@ -52,28 +41,33 @@ const OfficersBody = () => {
         toast.error(userData.message || "Failed to fetch user profile.");
       }
 
-      const res = await fetch(`/api/proxy?endpoint=${ENDPOINTS.GET_OFFICERS}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      // Fetch reservations
+      const passenger = await fetch(
+        `/api/proxy?endpoint=${ENDPOINTS.GET_PASSENGERS}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      const data = await res.json();
-      if (res.ok && Array.isArray(data.data)) {
-        setOfficers(data.data);
+      const data = await passenger.json();
+
+      if (passenger.ok && data.status) {
+        setPassengers(data.data);
       } else {
         throw new Error(data.message || "Failed to fetch officers.");
       }
-    } catch (err: any) {
-      console.error("Error fetching officers:", err);
-      setError(err.message);
-      toast.error(err.message);
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    fetchUserAndPassengers();
+  }, []);
 
   const toggleBlock = async (id: number, deletedAt: string) => {
     try {
@@ -94,7 +88,7 @@ const OfficersBody = () => {
 
       if (res.ok) {
         toast.success(data.message || "Status updated.");
-        fetchOfficers();
+        fetchUserAndPassengers();
       } else {
         throw new Error(data.message || "Action failed.");
       }
@@ -103,11 +97,6 @@ const OfficersBody = () => {
       toast.error(err.message);
     }
   };
-
-  useEffect(() => {
-    fetchOfficers();
-  }, []);
-
   if (loading)
     return (
       <div className="flex justify-center items-center h-64">
@@ -120,13 +109,13 @@ const OfficersBody = () => {
   return (
     <div className="p-6">
       <PrintToPDF
-        title="List of Officers"
-        fileName="officers-list.pdf"
-        buttonLabel="Download Officers"
+        title="List of Passengers"
+        fileName="passengers-list.pdf"
+        buttonLabel="Download Passengers"
         generatedByFname={fname}
         generatedByLname={lname}
       >
-        <SubHeaderButton />
+        {/* <FilterBar /> */}
         <div className="overflow-x-auto">
           <table className="min-w-full table-auto border border-[#3d5554] bg-white">
             <thead className="bg-[#3d5554] text-white">
@@ -137,55 +126,53 @@ const OfficersBody = () => {
                 <th className="py-3 px-5 border text-left">Mobile</th>
                 <th className="py-3 px-5 border text-left">Address</th>
                 <th className="py-3 px-5 border text-left">Birthday</th>
-                <th className="py-3 px-5 border text-left">User Type</th>
                 <th className="py-3 px-5 border text-left">Status</th>
                 <th className="py-3 px-5 border text-left">Last Login</th>
                 <th className="py-3 px-5 border text-left">Action</th>
               </tr>
             </thead>
             <tbody className="text-black">
-              {officers.map((officer) => (
+              {passengers.map((passenger) => (
                 <tr
-                  key={officer.id}
+                  key={passenger.id}
                   className={`transition-colors ${
-                    officer.deleted_at
+                    passenger.deleted_at
                       ? "bg-red-100 hover:bg-red-200"
                       : "hover:bg-gray-100"
                   }`}
                 >
-                  <td className="py-3 px-5 border">{officer.fname}</td>
-                  <td className="py-3 px-5 border">{officer.lname}</td>
-                  <td className="py-3 px-5 border">{officer.email}</td>
-                  <td className="py-3 px-5 border">{officer.mobile_number}</td>
-                  <td className="py-3 px-5 border">{officer.address}</td>
-                  <td className="py-3 px-5 border">{officer.birthday}</td>
+                  <td className="py-3 px-5 border">{passenger.fname}</td>
+                  <td className="py-3 px-5 border">{passenger.lname}</td>
+                  <td className="py-3 px-5 border">{passenger.email}</td>
                   <td className="py-3 px-5 border">
-                    {userTypeMap[officer.user_type_id] || "Unknown"}
+                    {passenger.mobile_number}
                   </td>
+                  <td className="py-3 px-5 border">{passenger.address}</td>
+                  <td className="py-3 px-5 border">{passenger.birthday}</td>
                   <td className="py-3 px-5 border">
-                    {officer.is_active ? (
+                    {passenger.is_active ? (
                       <span className="text-green-600 font-medium">Online</span>
                     ) : (
                       <span className="text-red-600 font-medium">Offline</span>
                     )}
                   </td>
                   <td className="py-3 px-5 border">
-                    {officer.last_login_at
-                      ? new Date(officer.last_login_at).toLocaleString()
+                    {passenger.last_login_at
+                      ? new Date(passenger.last_login_at).toLocaleString()
                       : "—"}
                   </td>
                   <td className="py-3 px-5 border">
                     <button
                       onClick={() =>
-                        toggleBlock(officer.id, officer.deleted_at)
+                        toggleBlock(passenger.id, passenger.deleted_at)
                       }
                       className={`px-3 py-1 rounded text-sm ${
-                        officer.deleted_at
+                        passenger.deleted_at
                           ? "bg-green-600 hover:bg-green-700 text-white"
                           : "bg-red-600 hover:bg-red-700 text-white"
                       }`}
                     >
-                      {officer.deleted_at ? "Unblock" : "Block"}
+                      {passenger.deleted_at ? "Unblock" : "Block"}
                     </button>
                   </td>
                 </tr>
@@ -198,4 +185,4 @@ const OfficersBody = () => {
   );
 };
 
-export default OfficersBody;
+export default PassengersBody;

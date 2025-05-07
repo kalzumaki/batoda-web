@@ -8,8 +8,8 @@ import {
   PassengerReceiptEntry,
   PassengerReceiptResponse,
 } from "@/types/reservation";
-import FilterBar from "../FilterBar";
-import PrintReservationPDF from "../PrintReservationPdf";
+import FilterBar from "./FilterBar";
+import PrintReservationPDF from "./PrintReservationPdf";
 import { FiEye } from "react-icons/fi";
 
 const ReservationBody = () => {
@@ -112,35 +112,45 @@ const ReservationBody = () => {
 
   // Apply Filters to the Passenger Data
   const filteredPassengers = passengers
-  .filter((item) => {
-    // Search filter
-    const searchMatch =
-      (item.passenger_full_name &&
-        item.passenger_full_name.toLowerCase().includes(search.toLowerCase())) ||
-      (item.driver_full_name &&
-        item.driver_full_name.toLowerCase().includes(search.toLowerCase())) ||
-      (item.dispatcher_full_name &&
-        item.dispatcher_full_name.toLowerCase().includes(search.toLowerCase())) ||
-      ("reference_no" in item && item.reference_no.toLowerCase().includes(search.toLowerCase())); // Check if reference_no exists
+    .filter((item) => {
+      // Search filter
+      const searchMatch =
+        (item.passenger_full_name &&
+          item.passenger_full_name
+            .toLowerCase()
+            .includes(search.toLowerCase())) ||
+        (item.driver_full_name &&
+          item.driver_full_name.toLowerCase().includes(search.toLowerCase())) ||
+        (item.dispatcher_full_name &&
+          item.dispatcher_full_name
+            .toLowerCase()
+            .includes(search.toLowerCase())) ||
+        ("reference_no" in item &&
+          item.reference_no.toLowerCase().includes(search.toLowerCase())); // Check if reference_no exists
 
-    // Filter by ticket status
-    const statusMatch =
-      !filters.status || item.ticket_status === filters.status;
+      // Filter by ticket status
+      const statusMatch =
+        !filters.status || item.ticket_status === filters.status;
 
-    return searchMatch && statusMatch;
-  })
-  .sort((a, b) => {
-    // Sorting logic for date
-    const aDate = "transaction_date" in a ? new Date(a.transaction_date) : new Date(a.created_at);
-    const bDate = "transaction_date" in b ? new Date(b.transaction_date) : new Date(b.created_at);
+      return searchMatch && statusMatch;
+    })
+    .sort((a, b) => {
+      // Sorting logic for date
+      const aDate =
+        "transaction_date" in a
+          ? new Date(a.transaction_date)
+          : new Date(a.created_at);
+      const bDate =
+        "transaction_date" in b
+          ? new Date(b.transaction_date)
+          : new Date(b.created_at);
 
-    if (sortOrder === "newest") {
-      return bDate.getTime() - aDate.getTime();
-    } else {
-      return aDate.getTime() - bDate.getTime();
-    }
-  });
-
+      if (sortOrder === "newest") {
+        return bDate.getTime() - aDate.getTime();
+      } else {
+        return aDate.getTime() - bDate.getTime();
+      }
+    });
 
   if (loading)
     return (
@@ -184,7 +194,9 @@ const ReservationBody = () => {
                   <th className="py-3 px-5 border text-left">Ticket No.</th>
                   <th className="py-3 px-5 border text-left">Status</th>
                   <th className="py-3 px-5 border text-left">Reference No.</th>
-                  <th className="py-3 px-5 border text-left">Seats Available</th>
+                  <th className="py-3 px-5 border text-left">
+                    Seats Available
+                  </th>
                   <th className="py-3 px-5 border text-left">Passenger</th>
                   <th className="py-3 px-5 border text-left">Driver</th>
                   <th className="py-3 px-5 border text-left">Tricycle #</th>

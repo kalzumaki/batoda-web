@@ -23,4 +23,7 @@ export const ENDPOINTS = {
   GENERATE_QR: (id: number) => `/generate-qr/${id}`,
   GET_RESERVATION_HISTORY: '/reservations/receipt',
   GET_PASSENGERS: '/passengers',
+  GET_TOTAL_CONTRIBUTION: '/total/contribution',
+  GET_BATODA_LOGS: '/batodabank/logs',
+  GET_DRIVER_MOST_SALES: '/drivers/most-sales',
 };
