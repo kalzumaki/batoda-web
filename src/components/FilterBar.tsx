@@ -28,7 +28,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
   onCustomFilterChange,
   customFilters = [],
   showDateRange = false, // Default value set to false
-  showSearch = false,
+  showSearch = true,
 }) => {
   const [search, setSearch] = useState("");
   const [fromDate, setFromDate] = useState<Date | null>(null);
@@ -55,7 +55,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
 
   return (
     <div className="flex flex-wrap items-center gap-4 p-4 bg-white border border-gray-300 rounded-lg shadow-sm mb-6 text-black">
-      {/* Search Bar (Required) */}
+      {/* Search Bar  */}
       {showSearch && (
         <div className="flex flex-col">
           <label className="text-sm mb-1 font-medium">Search</label>

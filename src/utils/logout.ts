@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { ENDPOINTS } from "@/pages/api/endpoints";
-
+import Cookies from "js-cookie";
 let isLoggingOut = false;
 
 export const handleLogout = async (router: ReturnType<typeof useRouter>) => {
@@ -25,7 +25,7 @@ export const handleLogout = async (router: ReturnType<typeof useRouter>) => {
     if (response.ok) {
       console.log("Logout successful");
       localStorage.removeItem("user");
-
+      Cookies.remove("userToken");
       router.push(ENDPOINTS.LOGIN);
     } else {
       console.log("Logout failed:", response.status);

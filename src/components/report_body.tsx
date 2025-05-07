@@ -74,14 +74,17 @@ const ReportBody = () => {
     const { from, to } = range;
 
     if (from && to) {
-      // Filter data based on the date range
       const filteredData = report?.data.filter((item) => {
         const itemDate = new Date(item.created_at);
+        if (from.toDateString() === to.toDateString()) {
+          return itemDate.toDateString() === from.toDateString();
+        }
         return itemDate >= from && itemDate <= to;
       });
-      setFilteredReport(filteredData || []); // Update filtered report
+
+      setFilteredReport(filteredData || []);
     } else {
-      setFilteredReport(report?.data || []); // Reset to full report if no date range
+      setFilteredReport(report?.data || []);
     }
   };
 
@@ -100,6 +103,7 @@ const ReportBody = () => {
     <div className="space-y-4">
       {/* Filter bar component with date range filter */}
       <FilterBar
+        showSearch={false}
         onSearchChange={(search) => {}}
         onDateRangeChange={handleDateRangeChange}
         showDateRange={true}
@@ -150,9 +154,9 @@ const ReportBody = () => {
                     {dispatch.actual_dispatch_time ?? "N/A"}
                   </td>
                   <td className="py-3 px-5 border">
-                    {`${dispatch.dispatcher?.name || "N/A"} (${
-                      dispatch.dispatcher?.email || "N/A"
-                    })`}
+                    <div>{dispatch.dispatcher?.name || "N/A"}</div>
+                    <div>{dispatch.dispatcher?.email || "N/A"}</div>
+                    <div>{dispatch.dispatcher?.mobile || "N/A"}</div>
                   </td>
                   <td className="py-3 px-5 border">
                     <ul className="list-disc pl-5 space-y-1">
@@ -184,11 +188,14 @@ const ReportBody = () => {
                   </td>
 
                   <td className="py-3 px-5 border">
-                    {`${dispatch.driver?.name || "N/A"} (${
-                      dispatch.driver?.email || "N/A"
-                    })
-                    Tricycle: ${dispatch.driver?.tricycle_number || "N/A"}`}
+                    <div>{dispatch.driver?.name || "N/A"}</div>
+                    <div>({dispatch.driver?.email || "N/A"})</div>
+                    <div>{dispatch.driver?.mobile || "N/A"}</div>
+                    <div>
+                      Tricycle: {dispatch.driver?.tricycle_number || "N/A"}
+                    </div>
                   </td>
+
                   <td className="py-3 px-5 border">{dispatch.created_at}</td>
                 </tr>
               ))}

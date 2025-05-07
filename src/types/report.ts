@@ -12,6 +12,7 @@ export interface Dispatcher {
   user_id: number;
   name: string;
   email: string;
+  mobile: string;
   total_collected_fare: number;
   dispatcher_share: number;
   batoda_share: number;
@@ -21,6 +22,7 @@ export interface Driver {
   user_id: number;
   name: string;
   email: string;
+  mobile: string;
   tricycle_number: string;
 }
 
