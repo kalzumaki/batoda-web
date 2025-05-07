@@ -29,4 +29,6 @@ export const ENDPOINTS = {
   GET_REPORT: "/report/summary",
   UPDATE_USER: "/user/update",
   UPDATE_EMAIL_SEND_OTP: "/email-verification/send-otp",
+  SEND_OTP_PASSWORD_RESET: "/password-reset/send-otp",
+  VERIFY_OTP_FOR_PASSWORD_RESET: "/password-reset/verify",
 };

@@ -26,6 +26,8 @@ export const handleLogout = async (router: ReturnType<typeof useRouter>) => {
       console.log("Logout successful");
       localStorage.removeItem("user");
       Cookies.remove("userToken");
+      Cookies.remove("userEmail");
+      sessionStorage.clear();
       router.push(ENDPOINTS.LOGIN);
     } else {
       console.log("Logout failed:", response.status);

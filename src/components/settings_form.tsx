@@ -100,7 +100,9 @@ const SettingsForm = () => {
     const emailChanged = email !== initialData.email;
 
     if (!emailChanged && noChanges) {
-      toast.info("No changes made.");
+      if (e.nativeEvent instanceof SubmitEvent) {
+        toast.info("No changes made.");
+      }
       setSubmitting(false);
       return;
     } else {
