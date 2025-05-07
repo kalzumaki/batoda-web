@@ -1,6 +1,7 @@
 import React from "react";
 import Layout from "@/components/Layout";
 import ReusableHeader from "@/components/ReusableHeader";
+import ReportBody from "@/components/report_body";
 const Reports = () => {
   const userType = "admin";
   return (
@@ -11,6 +12,7 @@ const Reports = () => {
         title="Reports"
         subtitle="Generate and view all Report details in this page."
       />
+      <ReportBody/>
     </Layout>
   );
 };

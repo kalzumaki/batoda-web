@@ -19,6 +19,7 @@ interface FilterBarProps {
     options: FilterOption[];
   }[];
   showDateRange?: boolean; // Flag to toggle the date range filters
+  showSearch?: boolean;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
@@ -27,6 +28,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
   onCustomFilterChange,
   customFilters = [],
   showDateRange = false, // Default value set to false
+  showSearch = false,
 }) => {
   const [search, setSearch] = useState("");
   const [fromDate, setFromDate] = useState<Date | null>(null);
@@ -54,17 +56,18 @@ const FilterBar: React.FC<FilterBarProps> = ({
   return (
     <div className="flex flex-wrap items-center gap-4 p-4 bg-white border border-gray-300 rounded-lg shadow-sm mb-6 text-black">
       {/* Search Bar (Required) */}
-      <div className="flex flex-col">
-        <label className="text-sm mb-1 font-medium">Search</label>
-        <input
-          type="text"
-          placeholder="Enter keyword..."
-          value={search}
-          onChange={handleSearchChange}
-          className="px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3d5554] text-black"
-        />
-      </div>
-
+      {showSearch && (
+        <div className="flex flex-col">
+          <label className="text-sm mb-1 font-medium">Search</label>
+          <input
+            type="text"
+            placeholder="Enter keyword..."
+            value={search}
+            onChange={handleSearchChange}
+            className="px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3d5554] text-black"
+          />
+        </div>
+      )}
       {/* Conditionally render Date range filter if showDateRange is true */}
       {showDateRange && (
         <>

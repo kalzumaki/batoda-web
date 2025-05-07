@@ -26,4 +26,5 @@ export const ENDPOINTS = {
   GET_TOTAL_CONTRIBUTION: '/total/contribution',
   GET_BATODA_LOGS: '/batodabank/logs',
   GET_DRIVER_MOST_SALES: '/drivers/most-sales',
+  GET_REPORT: '/report/summary',
 };
