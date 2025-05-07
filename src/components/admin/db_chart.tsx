@@ -158,7 +158,7 @@ const DbChart: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-lg shadow-md">
+      <div className="bg-white p-4 rounded-lg shadow-md min-h-[400px]">
         <h3 className="text-lg font-semibold mb-4 text-[#2d665f]">
           Entries & Balance Trend
         </h3>

@@ -1,9 +1,32 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { ENDPOINTS } from "@/pages/api/endpoints";
 import { toast } from "react-toastify";
 import { TotalContribution, DriversMostSales } from "@/types/contribution";
 import { FaCoins, FaUsers } from "react-icons/fa";
+import { Bar, Doughnut } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
 
 const FinancesSubHeader = () => {
   const [fname, setFname] = useState<string>("");
@@ -12,7 +35,11 @@ const FinancesSubHeader = () => {
   const [sales, setSales] = useState<DriversMostSales>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [fadeIn, setFadeIn] = useState(false);
+  
+  const latest = contribution?.history?.[0];
+  const topDrivers = sales?.drivers?.slice(0, 5);
+  const top5Months = contribution?.history?.slice(0, 5) || [];
   const fetchUserAndFinances = async () => {
     try {
       const token = Cookies.get("userToken");
@@ -68,6 +95,7 @@ const FinancesSubHeader = () => {
       toast.error("Something went wrong");
     } finally {
       setLoading(false);
+      setFadeIn(true);
     }
   };
 
@@ -87,57 +115,146 @@ const FinancesSubHeader = () => {
     return <p className="text-red-500 text-center py-4">{error}</p>;
   }
 
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
-      {/* Total Contribution Card */}
-      <div className="bg-[#3d5554] text-white p-6 rounded-lg shadow-md">
-        <div className="flex items-center mb-4">
-          <FaCoins className="text-yellow-400 text-2xl mr-2" />
-          <h2 className="text-xl font-semibold">
-            Monthly Contribution Summary
-          </h2>
-        </div>
-        {contribution?.history?.map((item, idx) => (
-          <div key={idx} className="text-sm border-t border-white/30 pt-3 mt-3">
-            <p>
-              <strong>Month:</strong> {item.month}
-            </p>
-            <p>
-              <strong>Total:</strong> ₱{item.total_contribution}
-            </p>
-            <p>
-              <strong>Dispatcher Share:</strong> ₱{item.total_dispatcher_share}
-            </p>
-            <p>
-              <strong>BATODA Share:</strong> ₱{item.total_batoda_share}
-            </p>
-          </div>
-        ))}
-      </div>
+  const barChartData = {
+    labels: top5Months.map((record) => record.month),
+    datasets: [
+      {
+        label: "Total Contribution",
+        data: top5Months.map((record) => record.total_contribution),
+        backgroundColor: top5Months.map((_, idx) => {
+          const colors = [
+            "#2d665f",
+            "#FF5733",
+            "#DAF7A6",
+            "#FF8D1A",
+            "#A60000",
+          ];
+          return colors[idx % colors.length];
+        }),
+        borderColor: "#234d48",
+        borderWidth: 1,
+      },
+    ],
+  };
 
-      {/* Drivers Most Sales Card */}
-      <div className="bg-[#3d5554] text-white p-6 rounded-lg shadow-md">
-        <div className="flex items-center mb-4">
-          <FaUsers className="text-green-400 text-2xl mr-2" />
-          <h2 className="text-xl font-semibold">Top Performing Drivers</h2>
+  const doughnutChartData = {
+    labels: topDrivers?.map((driver) => driver.full_name) || [],
+    datasets: [
+      {
+        data: topDrivers?.map((driver) => driver.ticket_count) || [],
+        backgroundColor: [
+          "#2d665f",
+          "#FF5733",
+          "#DAF7A6",
+          "#FF8D1A",
+          "#A60000",
+        ],
+        borderColor: "#ffffff",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  return (
+    <>
+      <div
+        className={`grid grid-cols-1 md:grid-cols-2 gap-6 p-4 transition-opacity duration-700 ${
+          fadeIn ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        {/* Contribution Card */}
+        <div className="bg-[#2d665f] text-white p-6 rounded-2xl shadow-lg">
+          <div className="flex items-center mb-6">
+            <div className="bg-yellow-400 p-3 rounded-full mr-4">
+              <FaCoins className="text-white text-3xl" />
+            </div>
+            <h2 className="text-2xl font-bold tracking-wide">
+              Latest Contribution
+            </h2>
+          </div>
+          {latest ? (
+            <div className="space-y-2 text-lg leading-6">
+              <p>
+                <strong>Month:</strong> {latest.month}
+              </p>
+              <p>
+                <strong>Total:</strong> ₱{latest.total_contribution.toFixed(2)}
+              </p>
+              <p>
+                <strong>Dispatcher Share:</strong> ₱
+                {latest.total_dispatcher_share.toFixed(2)}
+              </p>
+              <p>
+                <strong>BATODA Share:</strong> ₱
+                {latest.total_batoda_share.toFixed(2)}
+              </p>
+            </div>
+          ) : (
+            <p className="text-gray-300 text-lg">
+              No contribution data available.
+            </p>
+          )}
         </div>
-        {sales?.drivers.length ? (
-          <ul className="text-sm space-y-2">
-            {sales.drivers.map((driver, idx) => (
-              <li key={idx} className="border-b border-white/20 pb-2">
-                <p>
-                  <strong>{driver.full_name}</strong>
-                </p>
-                <p>Tricycle #: {driver.tricycle_number ?? "N/A"}</p>
-                <p>Tickets Sold: {driver.ticket_count}</p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No sales data available.</p>
-        )}
+
+        {/* Top Driver Card */}
+        <div className="bg-[#2d665f] text-white p-6 rounded-2xl shadow-lg">
+          <div className="flex items-center mb-6">
+            <div className="bg-green-400 p-3 rounded-full mr-4">
+              <FaUsers className="text-white text-3xl" />
+            </div>
+            <h2 className="text-2xl font-bold tracking-wide">Top Driver</h2>
+          </div>
+          {topDrivers ? (
+            <div className="space-y-2 text-lg leading-6">
+              <p>
+                <strong>Name:</strong> {topDrivers[0]?.full_name}
+              </p>
+              <p>
+                <strong>Tricycle #:</strong>{" "}
+                {topDrivers[0]?.tricycle_number ?? "N/A"}
+              </p>
+              <p>
+                <strong>Tickets Sold:</strong> {topDrivers[0]?.ticket_count}
+              </p>
+            </div>
+          ) : (
+            <p className="text-gray-300 text-lg">
+              No driver sales data available.
+            </p>
+          )}
+        </div>
       </div>
-    </div>
+      {/* Graphs: Bar and Doughnut */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Bar Chart */}
+        <div className="w-full bg-white p-6 rounded-2xl shadow-lg flex flex-col items-center">
+          <h3 className="text-lg font-semibold mb-4 text-[#2d665f]">
+            Total Contribution
+          </h3>
+          <div className="w-full max-w-[400px]">
+            <Bar
+              data={barChartData}
+              options={{ responsive: true, maintainAspectRatio: false }}
+              height={300}
+            />
+          </div>
+        </div>
+
+        {/* Doughnut Chart */}
+        <div className="w-full bg-white p-6 rounded-2xl shadow-lg flex flex-col items-center">
+          <h3 className="text-lg font-semibold mb-4 text-[#2d665f]">
+            Top Drivers
+          </h3>
+          <div className="w-full max-w-[400px]">
+            <Doughnut
+              data={doughnutChartData}
+              options={{ responsive: true, maintainAspectRatio: false }}
+              height={300}
+            />
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 
