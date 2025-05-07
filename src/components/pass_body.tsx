@@ -56,7 +56,7 @@ const PassengersBody = () => {
       if (passenger.ok && data.status) {
         setPassengers(data.data);
       } else {
-        throw new Error(data.message || "Failed to fetch officers.");
+        throw new Error(data.message || "Failed to fetch passengers.");
       }
     } catch (error) {
       console.error("Error:", error);
