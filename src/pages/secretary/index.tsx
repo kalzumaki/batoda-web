@@ -6,6 +6,7 @@ import { authenticateUser } from "@/lib/auth";
 import { ENDPOINTS } from "../api/endpoints";
 import Layout from "@/components/Layout";
 import DBHeader from "@/components/db_header";
+import ContributionChart from "@/components/secretary/db_contribution_chart";
 
 const SecretaryDashboard = () => {
   const router = useRouter();
@@ -32,6 +33,7 @@ const SecretaryDashboard = () => {
       <title>SECRETARY</title>
       <div className="flex-1 overflow-y-auto">
         <DBHeader />
+        <ContributionChart />
       </div>
     </Layout>
   );

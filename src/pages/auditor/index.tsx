@@ -6,6 +6,7 @@ import { authenticateUser } from "@/lib/auth";
 import { ENDPOINTS } from "../api/endpoints";
 import Layout from "@/components/Layout";
 import DBHeader from "@/components/db_header";
+import AuditorChart from "@/components/auditor/db_auditor_chart";
 
 const AuditorDashboard = () => {
   const router = useRouter();
@@ -33,6 +34,7 @@ const AuditorDashboard = () => {
       <title>AUDITOR</title>
       <div className="flex-1 overflow-y-auto">
         <DBHeader />
+        <AuditorChart />
       </div>
     </Layout>
   );
