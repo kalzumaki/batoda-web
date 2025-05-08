@@ -33,4 +33,5 @@ export const ENDPOINTS = {
   VERIFY_OTP_FOR_PASSWORD_RESET: "/password-reset/verify",
   UPDATE_FARE: "/fare/update",
   GET_FARE: "/fare",
+  UPDATE_PROFILE_PIC: "/users/upload-profile"
 };

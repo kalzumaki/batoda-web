@@ -6,6 +6,7 @@ import { ENDPOINTS } from "@/pages/api/endpoints";
 import { toast } from "react-toastify";
 import { UpdateUser } from "@/types/user";
 import SettingsChangePassword from "./settings_cp";
+import SettingsUploadProfile from "./settings_upload_profile";
 
 const SettingsForm = () => {
   const [initialData, setInitialData] = useState<UpdateUser>({});
@@ -241,6 +242,7 @@ const SettingsForm = () => {
       <h2 className="text-2xl font-semibold mb-6 text-gray-800">
         Update Profile
       </h2>
+      <SettingsUploadProfile />
       <form
         className="grid grid-cols-1 md:grid-cols-2 gap-6"
         onSubmit={handleSubmit}
