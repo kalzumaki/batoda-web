@@ -242,7 +242,7 @@ const SettingsForm = () => {
       <h2 className="text-2xl font-semibold mb-6 text-gray-800">
         Update Profile
       </h2>
-      <SettingsUploadProfile />
+      {/* <SettingsUploadProfile /> */}
       <form
         className="grid grid-cols-1 md:grid-cols-2 gap-6"
         onSubmit={handleSubmit}
