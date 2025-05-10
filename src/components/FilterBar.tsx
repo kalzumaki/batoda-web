@@ -18,7 +18,7 @@ interface FilterBarProps {
     key: string;
     options: FilterOption[];
   }[];
-  showDateRange?: boolean; // Flag to toggle the date range filters
+  showDateRange?: boolean;
   showSearch?: boolean;
 }
 
@@ -27,7 +27,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
   onDateRangeChange,
   onCustomFilterChange,
   customFilters = [],
-  showDateRange = false, // Default value set to false
+  showDateRange = false,
   showSearch = true,
 }) => {
   const [search, setSearch] = useState("");
@@ -54,55 +54,56 @@ const FilterBar: React.FC<FilterBarProps> = ({
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-4 p-4 bg-white border border-gray-300 rounded-lg shadow-sm mb-6 text-black">
-      {/* Search Bar  */}
+    <div className="flex flex-wrap items-start gap-4 p-4 bg-white border border-gray-300 rounded-lg shadow-sm mb-6 text-black">
       {showSearch && (
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full sm:w-1/2 md:w-auto min-w-0">
           <label className="text-sm mb-1 font-medium">Search</label>
           <input
             type="text"
             placeholder="Enter keyword..."
             value={search}
             onChange={handleSearchChange}
-            className="px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3d5554] text-black"
+            className="px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3d5554] w-full text-black"
           />
         </div>
       )}
-      {/* Conditionally render Date range filter if showDateRange is true */}
+
       {showDateRange && (
         <>
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full sm:w-1/2 md:w-auto min-w-0">
             <label className="text-sm mb-1 font-medium">From Date</label>
             <DatePicker
               selected={fromDate}
               onChange={(date) => handleDateChange("from", date)}
               placeholderText="Select start date"
-              className="px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3d5554] text-black"
+              className="px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3d5554] w-full text-black"
             />
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full sm:w-1/2 md:w-auto min-w-0">
             <label className="text-sm mb-1 font-medium">To Date</label>
             <DatePicker
               selected={toDate}
               onChange={(date) => handleDateChange("to", date)}
               placeholderText="Select end date"
-              className="px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3d5554] text-black"
+              className="px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3d5554] w-full text-black"
             />
           </div>
         </>
       )}
 
-      {/* Conditionally render Custom Filters if provided */}
       {customFilters.length > 0 &&
         customFilters.map((filter) => (
-          <div key={filter.key} className="flex flex-col">
+          <div
+            key={filter.key}
+            className="flex flex-col w-full sm:w-1/2 md:w-auto min-w-0"
+          >
             <label className="text-sm mb-1 font-medium">{filter.label}</label>
             <select
               onChange={(e) =>
                 onCustomFilterChange?.(filter.key, e.target.value)
               }
-              className="px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3d5554] text-black"
+              className="px-4 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3d5554] w-full text-black"
             >
               <option value="">All</option>
               {filter.options.map((opt) => (

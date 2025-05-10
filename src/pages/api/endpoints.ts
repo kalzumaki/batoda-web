@@ -35,4 +35,6 @@ export const ENDPOINTS = {
   GET_FARE: "/fare",
   UPDATE_PROFILE_PIC: "/users/upload-profile",
   GET_AUDITOR_DB: "/auditor/db",
+  GET_TREASURER_DB: "/treasurer/db",
+  GET_AUDITOR_CARD: "/auditor/card",
 };

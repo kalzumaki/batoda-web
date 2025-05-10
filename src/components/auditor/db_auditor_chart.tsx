@@ -130,10 +130,9 @@ const AuditorChart = () => {
       },
     },
   };
-
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="bg-white p-4 rounded-lg shadow-md min-h-[400px]">
+    <div className="p-6">
+      <div className="bg-white p-4 rounded-lg shadow-md">
         <h3 className="text-lg font-semibold mb-4 text-[#2d665f]">
           Batoda Monthly Summary
         </h3>
@@ -142,7 +141,17 @@ const AuditorChart = () => {
             <div className="w-10 h-10 border-4 border-gray-300 border-t-[#2d665f] rounded-full animate-spin"></div>
           </div>
         ) : (
-          <Bar data={chartData} options={chartOptions} />
+          <div className="h-[350px]">
+            {" "}
+            {/* Adjust chart height here */}
+            <Bar
+              data={chartData}
+              options={{
+                ...chartOptions,
+                maintainAspectRatio: false, // Allow the chart to fill container
+              }}
+            />
+          </div>
         )}
       </div>
     </div>

@@ -7,6 +7,7 @@ import { ENDPOINTS } from "../api/endpoints";
 import Layout from "@/components/Layout";
 import DBHeader from "@/components/db_header";
 import BatodaLogsChart from "@/components/treasurer/db_batoda_logs";
+import Treasurer from "@/components/treasurer/db_treasurer";
 const TreasurerDashboard = () => {
   const router = useRouter();
   const [fname, setFname] = useState("");
@@ -34,6 +35,8 @@ const TreasurerDashboard = () => {
       <div className="flex-1 overflow-y-auto">
         <DBHeader />
         <BatodaLogsChart />
+        <Treasurer />
+
       </div>
     </Layout>
   );

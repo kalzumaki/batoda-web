@@ -51,16 +51,23 @@ const BatodaLogsChart = () => {
       const token = Cookies.get("userToken");
 
       try {
-        const res = await fetch(`/api/proxy?endpoint=${ENDPOINTS.GET_BATODA_LOGS}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await fetch(
+          `/api/proxy?endpoint=${ENDPOINTS.GET_BATODA_LOGS}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         const data = await res.json();
-        if (!res.ok || !data.status) throw new Error(data.error || "Failed to fetch logs");
+        if (!res.ok || !data.status)
+          throw new Error(data.error || "Failed to fetch logs");
 
-        const grouped: Record<string, { balance: number; fare: number; share: number }> = {};
+        const grouped: Record<
+          string,
+          { balance: number; fare: number; share: number }
+        > = {};
 
         data.data.forEach((log: BatodaLog) => {
           const month = format(parseISO(log.created_at), "MMMM yyyy");
@@ -90,9 +97,15 @@ const BatodaLogsChart = () => {
               data: balances,
               borderColor: "#2d665f",
               backgroundColor: "rgba(45, 102, 95, 0.1)",
-              tension: 0.3,
               fill: true,
+              tension: 0.3,
               yAxisID: "y",
+              pointStyle: "circle",
+              pointRadius: 5,
+              pointHoverRadius: 7,
+              pointBackgroundColor: "#2d665f",
+              pointBorderColor: "#fff",
+              pointBorderWidth: 2,
             },
             {
               type: "bar" as const,
@@ -100,6 +113,7 @@ const BatodaLogsChart = () => {
               data: shares,
               backgroundColor: "rgba(255, 99, 132, 0.6)",
               yAxisID: "y",
+              borderRadius: 6,
             },
             {
               type: "bar" as const,
@@ -107,6 +121,7 @@ const BatodaLogsChart = () => {
               data: fares,
               backgroundColor: "rgba(255, 165, 0, 0.7)",
               yAxisID: "y",
+              borderRadius: 6,
             },
           ],
         });
@@ -122,26 +137,54 @@ const BatodaLogsChart = () => {
 
   const chartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
-      legend: { position: "top" as const },
+      legend: {
+        position: "bottom" as const,
+        labels: {
+          boxWidth: 15,
+          padding: 20,
+          color: "#2d665f",
+          font: {
+            size: 12,
+            weight: 700,
+          },
+        },
+      },
       title: {
         display: true,
         text: "Monthly Batoda Logs Summary",
-        font: { size: 16 },
+        color: "#2d665f",
+        font: { size: 18, weight: 700 },
+        padding: {
+          top: 10,
+          bottom: 20,
+        },
       },
     },
     scales: {
       y: {
         beginAtZero: true,
-        ticks: { stepSize: 5 },
+        ticks: { stepSize: 5, color: "#666" },
+        grid: {
+          color: "#eee",
+        },
+      },
+      x: {
+        ticks: {
+          color: "#666",
+        },
+        grid: {
+          display: false,
+        },
       },
     },
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="bg-white p-4 rounded-lg shadow-md min-h-[400px]">
-        <h3 className="text-lg font-semibold mb-4 text-[#2d665f]">
+    <div className="w-full px-4 pt-6 bg-gray-50 flex justify-center">
+      <div className="bg-white p-6 pb-2 rounded-2xl shadow-lg w-full max-w-7xl">
+        <h3 className="text-xl font-bold text-[#2d665f] mb-6 text-center">
           Batoda Monthly Report
         </h3>
 
@@ -152,7 +195,9 @@ const BatodaLogsChart = () => {
         ) : error ? (
           <div className="text-red-500 text-sm text-center">{error}</div>
         ) : (
-          <Chart type="bar" data={chartData} options={chartOptions} />
+          <div className="h-[400px] w-full">
+            <Chart type="bar" data={chartData} options={chartOptions} />
+          </div>
         )}
       </div>
     </div>

@@ -40,6 +40,7 @@ const FinancesSubHeader = () => {
   const latest = contribution?.history?.[0];
   const topDrivers = sales?.drivers?.slice(0, 5);
   const top5Months = contribution?.history?.slice(0, 5) || [];
+
   const fetchUserAndFinances = async () => {
     try {
       const token = Cookies.get("userToken");
@@ -163,7 +164,7 @@ const FinancesSubHeader = () => {
         }`}
       >
         {/* Contribution Card */}
-        <div className="bg-[#2d665f] text-white p-6 rounded-2xl shadow-lg">
+        <div className="bg-[#2d665f] text-white p-6 rounded-2xl shadow-lg w-full">
           <div className="flex items-center mb-6">
             <div className="bg-yellow-400 p-3 rounded-full mr-4">
               <FaCoins className="text-white text-3xl" />
@@ -197,7 +198,7 @@ const FinancesSubHeader = () => {
         </div>
 
         {/* Top Driver Card */}
-        <div className="bg-[#2d665f] text-white p-6 rounded-2xl shadow-lg">
+        <div className="bg-[#2d665f] text-white p-6 rounded-2xl shadow-lg w-full">
           <div className="flex items-center mb-6">
             <div className="bg-green-400 p-3 rounded-full mr-4">
               <FaUsers className="text-white text-3xl" />
@@ -224,32 +225,31 @@ const FinancesSubHeader = () => {
           )}
         </div>
       </div>
+
       {/* Graphs: Bar and Doughnut */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
         {/* Bar Chart */}
         <div className="w-full bg-white p-6 rounded-2xl shadow-lg flex flex-col items-center">
-          <h3 className="text-lg font-semibold mb-4 text-[#2d665f]">
+          <h3 className="text-lg font-semibold mb-4 text-[#2d665f] text-center">
             Total Contribution
           </h3>
-          <div className="w-full max-w-[400px]">
+          <div className="w-full aspect-[4/3]">
             <Bar
               data={barChartData}
               options={{ responsive: true, maintainAspectRatio: false }}
-              height={300}
             />
           </div>
         </div>
 
         {/* Doughnut Chart */}
         <div className="w-full bg-white p-6 rounded-2xl shadow-lg flex flex-col items-center">
-          <h3 className="text-lg font-semibold mb-4 text-[#2d665f]">
+          <h3 className="text-lg font-semibold mb-4 text-[#2d665f] text-center">
             Top Drivers
           </h3>
-          <div className="w-full max-w-[400px]">
+          <div className="w-full aspect-square max-w-[400px]">
             <Doughnut
               data={doughnutChartData}
               options={{ responsive: true, maintainAspectRatio: false }}
-              height={300}
             />
           </div>
         </div>

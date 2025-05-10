@@ -7,6 +7,7 @@ import { ENDPOINTS } from "../api/endpoints";
 import Layout from "@/components/Layout";
 import DBHeader from "@/components/db_header";
 import AuditorChart from "@/components/auditor/db_auditor_chart";
+import Auditor from "@/components/auditor/db_auditor";
 
 const AuditorDashboard = () => {
   const router = useRouter();
@@ -35,6 +36,7 @@ const AuditorDashboard = () => {
       <div className="flex-1 overflow-y-auto">
         <DBHeader />
         <AuditorChart />
+        <Auditor />
       </div>
     </Layout>
   );
