@@ -1,0 +1,24 @@
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: .docker/dev.Dockerfile
+    ports:
+      - "3001:3000"
+    volumes:
+      - .:/usr/src/app
+
+      # - /usr/src/app/node_modules
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_APP_KEY=${APP_KEY}
+      - NEXT_PUBLIC_APP_SECRET=${APP_SECRET}
+      - NEXT_PUBLIC_API_ENDPOINT=${API_ENDPOINT}
+    restart: "no"
+    networks:
+      - nextjs_network
+
+networks:
+  nextjs_network:
+    name: nextjs_network

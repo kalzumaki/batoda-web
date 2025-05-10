@@ -1,13 +1,15 @@
 import Topbar from '@/components/TopBar';
+import LoginPage from './login';
 
 const HomePage = () => {
   return (
     <>
-      <Topbar/>
+    <title>BATODA</title>
+      {/* <Topbar/>
     <main className="min-h-screen bg-lightTeal flex flex-col justify-center items-center">
       <header className="text-center">
         <h1 className="text-4xl md:text-5xl font-bold text-darkGreen mb-6">
-          Welcome to Batoda 
+          Welcome to Batoda
         </h1>
         <p className="text-xl text-teal mb-8">
           Modern solutions with a sleek design
@@ -22,7 +24,8 @@ const HomePage = () => {
           Learn More
         </button>
       </section>
-    </main>
+    </main> */}
+    <LoginPage />
     </>
   );
 };
