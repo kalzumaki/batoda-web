@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { ENDPOINTS } from "@/pages/api/endpoints";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CreditCard, Wallet, } from "lucide-react";
 
 interface User {
   id: number;
@@ -89,20 +89,23 @@ const Auditor: React.FC = () => {
 
   return (
     <div className="p-6 bg-[#f8f9fa] min-h-screen text-[#3d5554]">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
-        <div className="p-5 rounded-lg shadow-md bg-[#3d5554] text-white">
-          <h2 className="font-semibold text-sm uppercase">
-            Total Transactions
-          </h2>
-          <p className="text-2xl">{dashboardData.totals.transactions}</p>
+      <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="w-full p-5 rounded-lg shadow-md bg-[#3d5554] text-white flex items-center gap-4">
+          <CreditCard className="w-8 h-8 text-white" />
+          <div>
+            <h2 className="font-semibold text-sm uppercase">
+              Total Transactions
+            </h2>
+            <p className="text-2xl">{dashboardData.totals.transactions}</p>
+          </div>
         </div>
-        <div className="p-5 rounded-lg shadow-md bg-[#2d665f] text-white">
-          <h2 className="font-semibold text-sm uppercase">Total Receipts</h2>
-          <p className="text-2xl">{dashboardData.totals.receipts}</p>
-        </div>
-        <div className="p-5 rounded-lg shadow-md bg-[#3d5554] text-white">
-          <h2 className="font-semibold text-sm uppercase">Total Collected</h2>
-          <p className="text-2xl">₱{dashboardData.totals.total_collected}</p>
+
+        <div className="w-full p-5 rounded-lg shadow-md bg-[#3d5554] text-white flex items-center gap-4">
+          <Wallet className="w-8 h-8 text-white" />
+          <div>
+            <h2 className="font-semibold text-sm uppercase">Total Collected</h2>
+            <p className="text-2xl">₱{dashboardData.totals.total_collected}</p>
+          </div>
         </div>
       </div>
 
@@ -139,8 +142,8 @@ const Auditor: React.FC = () => {
           {dashboardData.recent_receipts.map((receipt) => (
             <div key={receipt.id} className="p-4 bg-white rounded-lg shadow">
               <p>
-                <strong>{receipt.passenger || receipt.driver || "N/A"}</strong> — ₱
-                {receipt.total_cost}
+                <strong>{receipt.passenger || receipt.driver || "N/A"}</strong>{" "}
+                — ₱{receipt.total_cost}
               </p>
               <p>Driver: {receipt.driver}</p>
               <p>Payment: {receipt.payment_method}</p>

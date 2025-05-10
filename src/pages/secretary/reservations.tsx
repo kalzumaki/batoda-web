@@ -2,6 +2,7 @@ import React from "react";
 import Layout from "@/components/Layout";
 import ReusableHeader from "@/components/ReusableHeader";
 import ReservationBody from "@/components/res_body";
+import ScheduleMeeting from "@/components/schedule_meeting";
 
 const Reservations = () => {
   const userType = "secretary";

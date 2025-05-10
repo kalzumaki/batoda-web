@@ -37,4 +37,5 @@ export const ENDPOINTS = {
   GET_AUDITOR_DB: "/auditor/db",
   GET_TREASURER_DB: "/treasurer/db",
   GET_AUDITOR_CARD: "/auditor/card",
+  NOTIF_MEETING: "/notifications/meeting",
 };
