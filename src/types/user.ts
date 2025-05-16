@@ -36,6 +36,14 @@ export interface DriverDispatcher {
   is_active: number;
   last_login_at: string | null;
   tricycle_number: string | null;
+  brgy_clearance: string;
+  valid_id: {
+    valid_id_type: string;
+    id_number: string;
+    front_image: string;
+    back_image: string;
+  };
+  profile: string | null;
   deleted_at: string | null;
   created_at: string | null;
 }

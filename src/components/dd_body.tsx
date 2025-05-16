@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { DriverDispatcher } from "@/types/user";
 import FilterBar from "./FilterBar";
 import PrintToPDF from "./PrintToPdf";
+import Image from "next/image";
 
 const DriverDispatcherBody = () => {
   const [users, setUsers] = useState<DriverDispatcher[]>([]);
@@ -24,6 +25,32 @@ const DriverDispatcherBody = () => {
     to: null,
   });
   const [filters, setFilters] = useState<{ [key: string]: string }>({});
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [modalImages, setModalImages] = useState<string[]>([]);
+  const [modalTitle, setModalTitle] = useState<string>("");
+  const [modalIdNumber, setModalIdNumber] = useState<string>("");
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+
+  const openModal = (images: string[], title: string, idNumber?: string) => {
+    const fullUrls = images.map((image) => {
+      const isFullUrl =
+        image.startsWith("http://") || image.startsWith("https://");
+      const rawUrl = isFullUrl
+        ? image
+        : `${process.env.NEXT_PUBLIC_API_STORAGE}storage/${image}`;
+      return `/api/image-proxy?url=${encodeURIComponent(rawUrl)}`;
+    });
+
+    setModalImages(fullUrls);
+    setModalTitle(title);
+    setModalIdNumber(idNumber || "");
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setModalImages([]);
+  };
 
   const fetchUsers = async () => {
     try {
@@ -204,6 +231,7 @@ const DriverDispatcherBody = () => {
                 <table className="min-w-full table-auto border border-[#3d5554] bg-white">
                   <thead className="bg-[#3d5554] text-white">
                     <tr>
+                      <th className="py-3 px-5 border text-left">Profile</th>
                       <th className="py-3 px-5 border text-left">Full Name</th>
                       <th className="py-3 px-5 border text-left">Birthday</th>
                       <th className="py-3 px-5 border text-left">Email</th>
@@ -215,9 +243,14 @@ const DriverDispatcherBody = () => {
                       <th className="py-3 px-5 border text-left">
                         Tricycle No.
                       </th>
+                      <th className="py-3 px-5 border text-left">
+                        Brgy Clearance
+                      </th>
+                      <th className="py-3 px-5 border text-left">Valid ID</th>
                       <th className="py-3 px-5 border text-left">Action</th>
                     </tr>
                   </thead>
+
                   <tbody className="text-black">
                     {filteredUsers.map((user) => (
                       <tr
@@ -228,6 +261,24 @@ const DriverDispatcherBody = () => {
                             : "hover:bg-gray-100"
                         }`}
                       >
+                        {/* Profile */}
+                        <td className="py-3 px-5 border">
+                          {user.profile ? (
+                            <img
+                              src={`/api/image-proxy?url=${encodeURIComponent(
+                                user.profile.startsWith("http://") ||
+                                  user.profile.startsWith("https://")
+                                  ? user.profile
+                                  : `${process.env.NEXT_PUBLIC_API_STORAGE}storage/${user.profile}`
+                              )}`}
+                              alt="Profile"
+                              className="w-16 h-16 object-cover rounded-md"
+                            />
+                          ) : (
+                            <span className="text-gray-400">No Image</span>
+                          )}
+                        </td>
+
                         <td className="py-3 px-5 border">{user.full_name}</td>
                         <td className="py-3 px-5 border">{user.birthday}</td>
                         <td className="py-3 px-5 border">{user.email}</td>
@@ -257,6 +308,51 @@ const DriverDispatcherBody = () => {
                         <td className="py-3 px-5 border">
                           {user.tricycle_number ?? "—"}
                         </td>
+
+                        {/* Barangay Clearance */}
+                        <td className="py-3 px-5 border">
+                          {user.brgy_clearance ? (
+                            <button
+                              onClick={() =>
+                                openModal(
+                                  [user.brgy_clearance],
+                                  "Brgy Clearance"
+                                )
+                              }
+                              className="text-blue-600 underline text-sm"
+                            >
+                              View
+                            </button>
+                          ) : (
+                            <span className="text-gray-400">No File</span>
+                          )}
+                        </td>
+
+                        {/* Valid ID */}
+                        <td className="py-3 px-5 border">
+                          {user.valid_id?.front_image ||
+                          user.valid_id?.back_image ? (
+                            <button
+                              onClick={() =>
+                                openModal(
+                                  [
+                                    user.valid_id.front_image,
+                                    user.valid_id.back_image,
+                                  ],
+                                  "Valid ID",
+                                  user.valid_id.id_number
+                                )
+                              }
+                              className="text-blue-600 underline text-sm"
+                            >
+                              View
+                            </button>
+                          ) : (
+                            <span className="text-gray-400">No File</span>
+                          )}
+                        </td>
+
+                        {/* Action */}
                         <td className="py-3 px-5 border">
                           <button
                             onClick={() =>
@@ -278,6 +374,38 @@ const DriverDispatcherBody = () => {
               </div>
             </div>
           </PrintToPDF>
+          {modalOpen && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+              onClick={closeModal} // Close when backdrop is clicked
+            >
+              <div
+                className="relative bg-white p-6 rounded-lg max-w-lg w-full"
+                onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+              >
+                <h2 className="text-xl font-semibold mb-2 text-black">
+                  {modalTitle}
+                </h2>
+
+                {modalIdNumber && (
+                  <p className="text-sm mb-4 text-gray-600">
+                    ID Number: {modalIdNumber}
+                  </p>
+                )}
+
+                <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+                  {modalImages.map((src, index) => (
+                    <img
+                      key={index}
+                      src={src}
+                      alt={`Document ${index + 1}`}
+                      className="w-full h-auto rounded border"
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </>
