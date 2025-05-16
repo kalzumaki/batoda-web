@@ -31,7 +31,7 @@ const Layout: React.FC<LayoutProps> = ({ children, userType }) => {
         <div className="flex flex-col min-h-screen">
           <div className="flex-grow">{children}</div>
           <footer className="py-4 text-center text-sm text-gray-600">
-            &copy; {currentYear} Group 3 BATODA. All rights reserved.
+            &copy; {currentYear} VJBJ. All rights reserved.
           </footer>
         </div>
       </main>
