@@ -8,6 +8,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children, userType }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const currentYear = new Date().getFullYear();
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -23,10 +24,16 @@ const Layout: React.FC<LayoutProps> = ({ children, userType }) => {
       {/* Main content: adjusts based on sidebar */}
       <main
         className={`transition-all duration-300 ease-in-out p-4 bg-white flex-1 overflow-y-auto ${
-          isSidebarOpen ? "ml-64" : "ml-20" // Adjust margin
+          isSidebarOpen ? "ml-64" : "ml-20"
         }`}
       >
-        {children}
+        {/* Flex container to push footer to bottom */}
+        <div className="flex flex-col min-h-screen">
+          <div className="flex-grow">{children}</div>
+          <footer className="py-4 text-center text-sm text-gray-600">
+            &copy; {currentYear} Group 3 BATODA. All rights reserved.
+          </footer>
+        </div>
       </main>
     </div>
   );
