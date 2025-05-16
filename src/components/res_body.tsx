@@ -187,135 +187,143 @@ const ReservationBody = () => {
       >
         <div className="rounded-lg shadow overflow-x-auto mt-6">
           <div className="overflow-x-auto">
-            <table className="min-w-full table-auto border border-[#3d5554] bg-white">
-              <thead className="bg-[#3d5554] text-white">
-                <tr>
-                  <th className="py-3 px-5 border text-left">Dispatch No.</th>
-                  <th className="py-3 px-5 border text-left">Ticket No.</th>
-                  <th className="py-3 px-5 border text-left">Status</th>
-                  <th className="py-3 px-5 border text-left">Reference No.</th>
-                  <th className="py-3 px-5 border text-left">
-                    Seats Available
-                  </th>
-                  <th className="py-3 px-5 border text-left">Passenger</th>
-                  <th className="py-3 px-5 border text-left">Driver</th>
-                  <th className="py-3 px-5 border text-left">Tricycle #</th>
-                  <th className="py-3 px-5 border text-left">Dispatcher</th>
-                  <th className="py-3 px-5 border text-left">Seats</th>
-                  <th className="py-3 px-5 border text-left">Fare</th>
-                  <th className="py-3 px-5 border text-left">Total</th>
-                  <th className="py-3 px-5 border text-left">Payment</th>
-                  <th className="py-3 px-5 border text-left">Date</th>
-                </tr>
-              </thead>
-              <tbody className="text-black">
-                {filteredPassengers.length === 0 ? (
+            <div className="max-h-[450px] overflow-y-auto">
+              <table className="min-w-full table-auto border border-[#3d5554] bg-white">
+                <thead className="bg-[#3d5554] text-white">
                   <tr>
-                    <td colSpan={13} className="text-center py-4">
-                      No reservation history found.
-                    </td>
+                    <th className="py-3 px-5 border text-left">Dispatch No.</th>
+                    <th className="py-3 px-5 border text-left">Ticket No.</th>
+                    <th className="py-3 px-5 border text-left">Status</th>
+                    <th className="py-3 px-5 border text-left">
+                      Reference No.
+                    </th>
+                    <th className="py-3 px-5 border text-left">
+                      Seats Available
+                    </th>
+                    <th className="py-3 px-5 border text-left">Passenger</th>
+                    <th className="py-3 px-5 border text-left">Driver</th>
+                    <th className="py-3 px-5 border text-left">Tricycle #</th>
+                    <th className="py-3 px-5 border text-left">Dispatcher</th>
+                    <th className="py-3 px-5 border text-left">Seats</th>
+                    <th className="py-3 px-5 border text-left">Fare</th>
+                    <th className="py-3 px-5 border text-left">Total</th>
+                    <th className="py-3 px-5 border text-left">Payment</th>
+                    <th className="py-3 px-5 border text-left">Date</th>
                   </tr>
-                ) : (
-                  filteredPassengers.map((item, index) => {
-                    const isCancelled = item.ticket_status === "cancelled";
-                    return (
-                      <tr
-                        key={index}
-                        className={`transition-colors ${
-                          isCancelled
-                            ? "bg-red-100 hover:bg-red-200"
-                            : "hover:bg-gray-100"
-                        }`}
-                      >
-                        <td className="py-3 px-5 border">{item.dispatch_id}</td>
-                        <td className="py-3 px-5 border">
-                          {item.ticket_number}
-                        </td>
-                        <td className="py-3 px-5 border capitalize">
-                          {item.ticket_status}
-                        </td>
-                        <td className="py-3 px-5 border">
-                          {"reference_no" in item ? item.reference_no : "—"}
-                        </td>
-                        <td className="py-3 px-5 border">
-                          {item.number_of_seats_avail}
-                        </td>
-                        <td className="py-3 px-5 border">
-                          {"passenger_full_name" in item
-                            ? item.passenger_full_name
-                            : "—"}
-                        </td>
-                        <td className="py-3 px-5 border">
-                          {"driver_full_name" in item
-                            ? item.driver_full_name
-                            : "—"}
-                        </td>
-                        <td className="py-3 px-5 border">
-                          {"tricycle_number" in item
-                            ? item.tricycle_number
-                            : "—"}
-                        </td>
-                        <td className="py-3 px-5 border">
-                          {"dispatcher_full_name" in item
-                            ? item.dispatcher_full_name
-                            : "—"}
-                        </td>
-                        <td className="py-3 px-5 border w-40 align-top">
-                          <div className="print:hidden">
-                            <button
-                              onClick={() =>
-                                openModal(
-                                  "seat_positions" in item &&
-                                    item.seat_positions
-                                    ? item.seat_positions.split(", ")
-                                    : []
-                                )
-                              }
-                              className="bg-[#3d5554] text-white py-2 px-3 rounded hover:bg-[#2c3f3e] flex items-center justify-center"
-                              title="View Seats"
-                            >
-                              <FiEye className="w-5 h-5" />
-                            </button>
-                          </div>
+                </thead>
+                <tbody className="text-black">
+                  {filteredPassengers.length === 0 ? (
+                    <tr>
+                      <td colSpan={13} className="text-center py-4">
+                        No reservation history found.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredPassengers.map((item, index) => {
+                      const isCancelled = item.ticket_status === "cancelled";
+                      return (
+                        <tr
+                          key={index}
+                          className={`transition-colors ${
+                            isCancelled
+                              ? "bg-red-100 hover:bg-red-200"
+                              : "hover:bg-gray-100"
+                          }`}
+                        >
+                          <td className="py-3 px-5 border">
+                            {item.dispatch_id}
+                          </td>
+                          <td className="py-3 px-5 border">
+                            {item.ticket_number}
+                          </td>
+                          <td className="py-3 px-5 border capitalize">
+                            {item.ticket_status}
+                          </td>
+                          <td className="py-3 px-5 border">
+                            {"reference_no" in item ? item.reference_no : "—"}
+                          </td>
+                          <td className="py-3 px-5 border">
+                            {item.number_of_seats_avail}
+                          </td>
+                          <td className="py-3 px-5 border">
+                            {"passenger_full_name" in item
+                              ? item.passenger_full_name
+                              : "—"}
+                          </td>
+                          <td className="py-3 px-5 border">
+                            {"driver_full_name" in item
+                              ? item.driver_full_name
+                              : "—"}
+                          </td>
+                          <td className="py-3 px-5 border">
+                            {"tricycle_number" in item
+                              ? item.tricycle_number
+                              : "—"}
+                          </td>
+                          <td className="py-3 px-5 border">
+                            {"dispatcher_full_name" in item
+                              ? item.dispatcher_full_name
+                              : "—"}
+                          </td>
+                          <td className="py-3 px-5 border w-40 align-top">
+                            <div className="print:hidden">
+                              <button
+                                onClick={() =>
+                                  openModal(
+                                    "seat_positions" in item &&
+                                      item.seat_positions
+                                      ? item.seat_positions.split(", ")
+                                      : []
+                                  )
+                                }
+                                className="bg-[#3d5554] text-white py-2 px-3 rounded hover:bg-[#2c3f3e] flex items-center justify-center"
+                                title="View Seats"
+                              >
+                                <FiEye className="w-5 h-5" />
+                              </button>
+                            </div>
 
-                          {/* Print-only seat list */}
-                          {"seat_positions" in item && item.seat_positions ? (
-                            <ul className="list-disc pl-5 mt-2 hidden print:block text-black">
-                              {item.seat_positions
-                                .split(", ")
-                                .map((seat, index) => (
-                                  <li key={index}>{seat}</li>
-                                ))}
-                            </ul>
-                          ) : (
-                            <span className="hidden print:block">—</span>
-                          )}
-                        </td>
+                            {/* Print-only seat list */}
+                            {"seat_positions" in item && item.seat_positions ? (
+                              <ul className="list-disc pl-5 mt-2 hidden print:block text-black">
+                                {item.seat_positions
+                                  .split(", ")
+                                  .map((seat, index) => (
+                                    <li key={index}>{seat}</li>
+                                  ))}
+                              </ul>
+                            ) : (
+                              <span className="hidden print:block">—</span>
+                            )}
+                          </td>
 
-                        <td className="py-3 px-5 border">
-                          {"passenger_fare" in item
-                            ? `${item.passenger_fare}`
-                            : "—"}
-                        </td>
-                        <td className="py-3 px-5 border">
-                          {"total_amount" in item
-                            ? `${item.total_amount}`
-                            : "—"}
-                        </td>
-                        <td className="py-3 px-5 border">
-                          {"payment_method" in item ? item.payment_method : "—"}
-                        </td>
-                        <td className="py-3 px-5 border w-40 truncate">
-                          {"transaction_date" in item
-                            ? new Date(item.transaction_date).toLocaleString()
-                            : new Date(item.created_at).toLocaleString()}
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
+                          <td className="py-3 px-5 border">
+                            {"passenger_fare" in item
+                              ? `${item.passenger_fare}`
+                              : "—"}
+                          </td>
+                          <td className="py-3 px-5 border">
+                            {"total_amount" in item
+                              ? `${item.total_amount}`
+                              : "—"}
+                          </td>
+                          <td className="py-3 px-5 border">
+                            {"payment_method" in item
+                              ? item.payment_method
+                              : "—"}
+                          </td>
+                          <td className="py-3 px-5 border w-40 truncate">
+                            {"transaction_date" in item
+                              ? new Date(item.transaction_date).toLocaleString()
+                              : new Date(item.created_at).toLocaleString()}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
 
           {/* Custom Modal to display seats */}

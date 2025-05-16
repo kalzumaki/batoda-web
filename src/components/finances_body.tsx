@@ -115,49 +115,54 @@ const FinancesBody = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md text-black">
-              <thead className="bg-[#2d665f] text-white">
-                <tr>
-                  <th className="px-4 py-2 text-left">Driver</th>
-                  <th className="px-4 py-2 text-left">Dispatcher</th>
-                  <th className="px-4 py-2 text-left">Batoda Balance</th>
-                  <th className="px-4 py-2 text-left">Dispatcher Fare</th>
-                  <th className="px-4 py-2 text-left">Dispatcher Share</th>
-                  <th className="px-4 py-2 text-left">Date</th>
-                  <th className="px-4 py-2 text-left">Time</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredLogs.length > 0 ? (
-                  filteredLogs.map((log) => (
-                    <tr
-                      key={log.id}
-                      className="border-t border-gray-200 hover:bg-gray-100 transition-colors"
-                    >
-                      <td className="px-4 py-2">{log.driver}</td>
-                      <td className="px-4 py-2">{log.dispatcher}</td>
-                      <td className="px-4 py-2">
-                        ₱{parseFloat(log.balance).toFixed(2)}
-                      </td>
-                      <td className="px-4 py-2">
-                        ₱{parseFloat(log.dispatcher_fare).toFixed(2)}
-                      </td>
-                      <td className="px-4 py-2">
-                        ₱{parseFloat(log.dispatcher_share).toFixed(2)}
-                      </td>
-                      <td className="px-4 py-2">{log.date}</td>
-                      <td className="px-4 py-2">{log.time}</td>
-                    </tr>
-                  ))
-                ) : (
+            <div className="max-h-[450px] overflow-y-auto">
+              <table className="min-w-full bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md text-black">
+                <thead className="bg-[#2d665f] text-white">
                   <tr>
-                    <td colSpan={7} className="text-center py-6 text-gray-500">
-                      No logs found for selected filters.
-                    </td>
+                    <th className="px-4 py-2 text-left">Driver</th>
+                    <th className="px-4 py-2 text-left">Dispatcher</th>
+                    <th className="px-4 py-2 text-left">Batoda Balance</th>
+                    <th className="px-4 py-2 text-left">Dispatcher Fare</th>
+                    <th className="px-4 py-2 text-left">Dispatcher Share</th>
+                    <th className="px-4 py-2 text-left">Date</th>
+                    <th className="px-4 py-2 text-left">Time</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {filteredLogs.length > 0 ? (
+                    filteredLogs.map((log) => (
+                      <tr
+                        key={log.id}
+                        className="border-t border-gray-200 hover:bg-gray-100 transition-colors"
+                      >
+                        <td className="px-4 py-2">{log.driver}</td>
+                        <td className="px-4 py-2">{log.dispatcher}</td>
+                        <td className="px-4 py-2">
+                          ₱{parseFloat(log.balance).toFixed(2)}
+                        </td>
+                        <td className="px-4 py-2">
+                          ₱{parseFloat(log.dispatcher_fare).toFixed(2)}
+                        </td>
+                        <td className="px-4 py-2">
+                          ₱{parseFloat(log.dispatcher_share).toFixed(2)}
+                        </td>
+                        <td className="px-4 py-2">{log.date}</td>
+                        <td className="px-4 py-2">{log.time}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={7}
+                        className="text-center py-6 text-gray-500"
+                      >
+                        No logs found for selected filters.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </PrintReservationPDF>

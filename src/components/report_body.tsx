@@ -118,89 +118,93 @@ const ReportBody = () => {
         generatedByLname={lname}
       >
         <div className="overflow-x-auto">
-          <table className="min-w-full table-auto border border-[#3d5554] bg-white">
-            <thead className="bg-[#3d5554] text-white">
-              <tr>
-                <th className="py-3 px-5 border text-left">Dispatch ID</th>
-                <th className="py-3 px-5 border text-left">Passenger Count</th>
-                <th className="py-3 px-5 border text-left truncate">
-                  Scheduled Dispatch
-                </th>
-                <th className="py-3 px-5 border text-left truncate">
-                  Actual Dispatch
-                </th>
-                <th className="py-3 px-5 border text-left">Dispatcher</th>
-                <th className="py-3 px-5 border text-left w-64">
-                  Dispatcher Fare & Share
-                </th>
+          <div className="max-h-[500px] overflow-y-auto">
+            <table className="min-w-full table-auto border border-[#3d5554] bg-white">
+              <thead className="bg-[#3d5554] text-white">
+                <tr>
+                  <th className="py-3 px-5 border text-left">Dispatch ID</th>
+                  <th className="py-3 px-5 border text-left">
+                    Passenger Count
+                  </th>
+                  <th className="py-3 px-5 border text-left truncate">
+                    Scheduled Dispatch
+                  </th>
+                  <th className="py-3 px-5 border text-left truncate">
+                    Actual Dispatch
+                  </th>
+                  <th className="py-3 px-5 border text-left">Dispatcher</th>
+                  <th className="py-3 px-5 border text-left w-64">
+                    Dispatcher Fare & Share
+                  </th>
 
-                <th className="py-3 px-5 border text-left w-52">Driver</th>
-                <th className="py-3 px-5 border text-left truncate">
-                  Created At
-                </th>
-              </tr>
-            </thead>
-            <tbody className="text-black">
-              {filteredReport.map((dispatch) => (
-                <tr key={dispatch.dispatch_id} className="hover:bg-gray-100">
-                  <td className="py-3 px-5 border">{dispatch.dispatch_id}</td>
-                  <td className="py-3 px-5 border">
-                    {dispatch.passenger_count}
-                  </td>
-                  <td className="py-3 px-5 border">
-                    {dispatch.scheduled_dispatch_time}
-                  </td>
-                  <td className="py-3 px-5 border">
-                    {dispatch.actual_dispatch_time ?? "N/A"}
-                  </td>
-                  <td className="py-3 px-5 border">
-                    <div>{dispatch.dispatcher?.name || "N/A"}</div>
-                    <div>{dispatch.dispatcher?.email || "N/A"}</div>
-                    <div>{dispatch.dispatcher?.mobile || "N/A"}</div>
-                  </td>
-                  <td className="py-3 px-5 border">
-                    <ul className="list-disc pl-5 space-y-1">
-                      <li>
-                        Total Fare:{" "}
-                        {dispatch.dispatcher?.total_collected_fare
-                          ? dispatch.dispatcher.total_collected_fare
-                              .toFixed(2)
-                              .replace(/\d(?=(\d{3})+\.)/g, "$&,")
-                          : "N/A"}
-                      </li>
-                      <li>
-                        Dispatcher Share:{" "}
-                        {dispatch.dispatcher?.dispatcher_share
-                          ? dispatch.dispatcher.dispatcher_share
-                              .toFixed(2)
-                              .replace(/\d(?=(\d{3})+\.)/g, "$&,")
-                          : "N/A"}
-                      </li>
-                      <li>
-                        Batoda Share:{" "}
-                        {dispatch.dispatcher?.batoda_share
-                          ? dispatch.dispatcher.batoda_share
-                              .toFixed(2)
-                              .replace(/\d(?=(\d{3})+\.)/g, "$&,")
-                          : "N/A"}
-                      </li>
-                    </ul>
-                  </td>
-
-                  <td className="py-3 px-5 border">
-                    <div>{dispatch.driver?.name || "N/A"}</div>
-                    <div>({dispatch.driver?.email || "N/A"})</div>
-                    <div>{dispatch.driver?.mobile || "N/A"}</div>
-                    <div>
-                      Tricycle: {dispatch.driver?.tricycle_number || "N/A"}
-                    </div>
-                  </td>
-
-                  <td className="py-3 px-5 border">{dispatch.created_at}</td>
+                  <th className="py-3 px-5 border text-left w-52">Driver</th>
+                  <th className="py-3 px-5 border text-left truncate">
+                    Created At
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="text-black">
+                {filteredReport.map((dispatch) => (
+                  <tr key={dispatch.dispatch_id} className="hover:bg-gray-100">
+                    <td className="py-3 px-5 border">{dispatch.dispatch_id}</td>
+                    <td className="py-3 px-5 border">
+                      {dispatch.passenger_count}
+                    </td>
+                    <td className="py-3 px-5 border">
+                      {dispatch.scheduled_dispatch_time}
+                    </td>
+                    <td className="py-3 px-5 border">
+                      {dispatch.actual_dispatch_time ?? "N/A"}
+                    </td>
+                    <td className="py-3 px-5 border">
+                      <div>{dispatch.dispatcher?.name || "N/A"}</div>
+                      <div>{dispatch.dispatcher?.email || "N/A"}</div>
+                      <div>{dispatch.dispatcher?.mobile || "N/A"}</div>
+                    </td>
+                    <td className="py-3 px-5 border">
+                      <ul className="list-disc pl-5 space-y-1">
+                        <li>
+                          Total Fare:{" "}
+                          {dispatch.dispatcher?.total_collected_fare
+                            ? dispatch.dispatcher.total_collected_fare
+                                .toFixed(2)
+                                .replace(/\d(?=(\d{3})+\.)/g, "$&,")
+                            : "N/A"}
+                        </li>
+                        <li>
+                          Dispatcher Share:{" "}
+                          {dispatch.dispatcher?.dispatcher_share
+                            ? dispatch.dispatcher.dispatcher_share
+                                .toFixed(2)
+                                .replace(/\d(?=(\d{3})+\.)/g, "$&,")
+                            : "N/A"}
+                        </li>
+                        <li>
+                          Batoda Share:{" "}
+                          {dispatch.dispatcher?.batoda_share
+                            ? dispatch.dispatcher.batoda_share
+                                .toFixed(2)
+                                .replace(/\d(?=(\d{3})+\.)/g, "$&,")
+                            : "N/A"}
+                        </li>
+                      </ul>
+                    </td>
+
+                    <td className="py-3 px-5 border">
+                      <div>{dispatch.driver?.name || "N/A"}</div>
+                      <div>({dispatch.driver?.email || "N/A"})</div>
+                      <div>{dispatch.driver?.mobile || "N/A"}</div>
+                      <div>
+                        Tricycle: {dispatch.driver?.tricycle_number || "N/A"}
+                      </div>
+                    </td>
+
+                    <td className="py-3 px-5 border">{dispatch.created_at}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </PrintReservationPDF>
     </div>
