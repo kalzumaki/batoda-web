@@ -126,7 +126,9 @@ const ReservationBody = () => {
             .toLowerCase()
             .includes(search.toLowerCase())) ||
         ("reference_no" in item &&
-          item.reference_no.toLowerCase().includes(search.toLowerCase())); // Check if reference_no exists
+          item.reference_no.toLowerCase().includes(search.toLowerCase())) ||
+        ("tricycle_number" in item &&
+          item.tricycle_number.toLowerCase().includes(search.toLowerCase()));
 
       // Filter by ticket status
       const statusMatch =
