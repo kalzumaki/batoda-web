@@ -253,21 +253,45 @@ const DriverDispatcherBody = () => {
               <table className="min-w-full table-auto border border-[#3d5554] bg-white">
                 <thead className="bg-[#3d5554] text-white">
                   <tr>
-                    <th className="py-3 px-5 border text-left">Profile</th>
-                    <th className="py-3 px-5 border text-left">Full Name</th>
-                    <th className="py-3 px-5 border text-left">Birthday</th>
-                    <th className="py-3 px-5 border text-left">Email</th>
-                    <th className="py-3 px-5 border text-left">Mobile</th>
-                    <th className="py-3 px-5 border text-left">Address</th>
-                    <th className="py-3 px-5 border text-left">User Type</th>
-                    <th className="py-3 px-5 border text-left">Status</th>
-                    <th className="py-3 px-5 border text-left">Last Login</th>
-                    <th className="py-3 px-5 border text-left">Tricycle No.</th>
-                    <th className="py-3 px-5 border text-left">
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">
+                      Profile
+                    </th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">
+                      Full Name
+                    </th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">
+                      Birthday
+                    </th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">
+                      Email
+                    </th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">
+                      Mobile
+                    </th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">
+                      Address
+                    </th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">
+                      User Type
+                    </th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">
+                      Status
+                    </th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">
+                      Last Login
+                    </th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">
+                      Tricycle No.
+                    </th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">
                       Brgy Clearance
                     </th>
-                    <th className="py-3 px-5 border text-left">Valid ID</th>
-                    <th className="py-3 px-5 border text-left">Action</th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">
+                      Valid ID
+                    </th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">
+                      Action
+                    </th>
                   </tr>
                 </thead>
 

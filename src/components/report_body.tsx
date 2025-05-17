@@ -160,23 +160,23 @@ const ReportBody = () => {
             <table className="min-w-full table-auto border border-[#3d5554] bg-white">
               <thead className="bg-[#3d5554] text-white">
                 <tr>
-                  <th className="py-3 px-5 border text-left">Dispatch ID</th>
-                  <th className="py-3 px-5 border text-left">
-                    Passenger Count
+                  <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">Dispatch ID</th>
+                  <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">
+                    Seat Count
                   </th>
-                  <th className="py-3 px-5 border text-left truncate">
+                  <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px] truncate">
                     Scheduled Dispatch
                   </th>
-                  <th className="py-3 px-5 border text-left truncate">
+                  <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px] truncate">
                     Actual Dispatch
                   </th>
-                  <th className="py-3 px-5 border text-left">Dispatcher</th>
-                  <th className="py-3 px-5 border text-left w-64">
+                  <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">Dispatcher</th>
+                  <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">
                     Dispatcher Fare & Share
                   </th>
 
-                  <th className="py-3 px-5 border text-left w-52">Driver</th>
-                  <th className="py-3 px-5 border text-left truncate">
+                  <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px] ">Driver</th>
+                  <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px] ">
                     Created At
                   </th>
                 </tr>

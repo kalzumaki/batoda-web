@@ -193,24 +193,24 @@ const ReservationBody = () => {
               <table className="min-w-full table-auto border border-[#3d5554] bg-white">
                 <thead className="bg-[#3d5554] text-white">
                   <tr>
-                    <th className="py-3 px-5 border text-left">Dispatch No.</th>
-                    <th className="py-3 px-5 border text-left">Ticket No.</th>
-                    <th className="py-3 px-5 border text-left">Status</th>
-                    <th className="py-3 px-5 border text-left">
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">Dispatch No.</th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">Ticket No.</th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">Status</th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">
                       Reference No.
                     </th>
-                    <th className="py-3 px-5 border text-left">
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">
                       Seats Available
                     </th>
-                    <th className="py-3 px-5 border text-left">Passenger</th>
-                    <th className="py-3 px-5 border text-left">Driver</th>
-                    <th className="py-3 px-5 border text-left">Tricycle #</th>
-                    <th className="py-3 px-5 border text-left">Dispatcher</th>
-                    <th className="py-3 px-5 border text-left">Seats</th>
-                    <th className="py-3 px-5 border text-left">Fare</th>
-                    <th className="py-3 px-5 border text-left">Total</th>
-                    <th className="py-3 px-5 border text-left">Payment</th>
-                    <th className="py-3 px-5 border text-left">Date</th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">Passenger</th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">Driver</th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">Tricycle #</th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">Dispatcher</th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">Seats</th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">Fare</th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">Total</th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">Payment</th>
+                    <th className="py-3 px-5 border text-center whitespace-nowrap w-[120px]">Date</th>
                   </tr>
                 </thead>
                 <tbody className="text-black">
