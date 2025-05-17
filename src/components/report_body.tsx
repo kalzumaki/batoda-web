@@ -91,7 +91,15 @@ const ReportBody = () => {
     if (!report) return;
 
     if (selectedOption === "") {
-      setFilteredReport(report.data); // Reset to full
+      setFilteredReport(report.data);
+    } else if (selectedOption === "N/A") {
+
+      const filtered = report.data.filter(
+        (item) =>
+          !item.dispatch_option ||
+          item.dispatch_option === "N/A"
+      );
+      setFilteredReport(filtered);
     } else {
       const filtered = report.data.filter(
         (item) => item.dispatch_option === selectedOption
@@ -124,10 +132,11 @@ const ReportBody = () => {
             label: "Dispatch Option",
             key: "dispatch_option",
             options: [
-              { label: "Full Capacity", value: "Full Capacity" },
-              { label: "Emergency", value: "Emergency" },
-              { label: "Malfunctioned", value: "Malfunctioned" },
-              { label: "Charter/Pakyaw", value: "Charter/Pakyaw" },
+                { label: "Full Capacity", value: "Full Capacity" },
+                { label: "Emergency", value: "Emergency" },
+                { label: "Malfunctioned", value: "Malfunctioned" },
+                { label: "Charter/Pakyaw", value: "Charter/Pakyaw" },
+                { label: "N/A", value: "N/A" },
             ],
           },
         ]}
