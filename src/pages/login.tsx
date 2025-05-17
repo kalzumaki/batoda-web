@@ -7,7 +7,7 @@ import InputField from "@/components/InputField";
 import PasswordInputField from "@/components/PasswordInputField";
 import { LoginResponse } from "@/types/login";
 import { ENDPOINTS } from "./api/endpoints";
-
+import Logo from "@/assets/logo.png";
 const LoginPage: React.FC = () => {
   const [emailOrMobile, setEmailOrMobile] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -147,7 +147,8 @@ const LoginPage: React.FC = () => {
           onSubmit={handleSubmit}
           className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full"
         >
-          <h2 className="text-2xl font-semibold text-black mb-6 text-center">
+          <img src={Logo.src} alt="Logo" className="w-24 mx-auto" />
+          <h2 className="text-2xl font-semibold text-black mb-6 mt-3 text-center">
             Login
           </h2>
 
