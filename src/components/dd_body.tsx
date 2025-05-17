@@ -8,6 +8,7 @@ import { DriverDispatcher } from "@/types/user";
 import FilterBar from "./FilterBar";
 import PrintToPDF from "./PrintToPdf";
 import Image from "next/image";
+import PDFTableWithImages from "./PrintTableWithImages";
 
 const DriverDispatcherBody = () => {
   const [users, setUsers] = useState<DriverDispatcher[]>([]);
@@ -219,161 +220,173 @@ const DriverDispatcherBody = () => {
         </p>
       ) : (
         <div className="p-6">
-          <PrintToPDF
-            fileName="drivers_dispatchers_report.pdf"
-            title="Driver & Dispatcher Report"
-            buttonLabel="Download as PDF"
+          <PDFTableWithImages
+            title="Driver and Dispatcher List"
+            fileName="drivers_dispatchers.pdf"
+            buttonLabel="Download PDF"
             generatedByFname={fname}
             generatedByLname={lname}
-          >
-            <div className="rounded-lg shadow overflow-x-auto">
-              <div className="max-h-[450px] overflow-y-auto">
-                <table className="min-w-full table-auto border border-[#3d5554] bg-white">
-                  <thead className="bg-[#3d5554] text-white">
-                    <tr>
-                      <th className="py-3 px-5 border text-left">Profile</th>
-                      <th className="py-3 px-5 border text-left">Full Name</th>
-                      <th className="py-3 px-5 border text-left">Birthday</th>
-                      <th className="py-3 px-5 border text-left">Email</th>
-                      <th className="py-3 px-5 border text-left">Mobile</th>
-                      <th className="py-3 px-5 border text-left">Address</th>
-                      <th className="py-3 px-5 border text-left">User Type</th>
-                      <th className="py-3 px-5 border text-left">Status</th>
-                      <th className="py-3 px-5 border text-left">Last Login</th>
-                      <th className="py-3 px-5 border text-left">
-                        Tricycle No.
-                      </th>
-                      <th className="py-3 px-5 border text-left">
-                        Brgy Clearance
-                      </th>
-                      <th className="py-3 px-5 border text-left">Valid ID</th>
-                      <th className="py-3 px-5 border text-left">Action</th>
-                    </tr>
-                  </thead>
+            data={filteredUsers.map((user) => ({
+              profile: user.profile
+                ? `/api/image-proxy?url=${encodeURIComponent(
+                    user.profile.startsWith("http")
+                      ? user.profile
+                      : `${process.env.NEXT_PUBLIC_API_STORAGE}storage/${user.profile}`
+                  )}`
+                : "",
+              fullName: user.full_name,
+              birthday: user.birthday,
+              email: user.email,
+              mobile: user.mobile_number,
+              address: user.address,
+              userType: user.user_type,
+              status: user.deleted_at ? "Blocked" : "Active",
+              lastLogin: user.last_login_at
+                ? new Date(user.last_login_at).toLocaleString()
+                : "—",
+              tricycleNo: user.tricycle_number ?? undefined,
+            }))}
+          />
 
-                  <tbody className="text-black">
-                    {filteredUsers.map((user) => (
-                      <tr
-                        key={user.id}
-                        className={`transition-colors ${
-                          user.deleted_at
-                            ? "bg-red-100 hover:bg-red-200"
-                            : "hover:bg-gray-100"
-                        }`}
-                      >
-                        {/* Profile */}
-                        <td className="py-3 px-5 border">
-                          {user.profile ? (
-                            <img
-                              src={`/api/image-proxy?url=${encodeURIComponent(
-                                user.profile.startsWith("http://") ||
-                                  user.profile.startsWith("https://")
-                                  ? user.profile
-                                  : `${process.env.NEXT_PUBLIC_API_STORAGE}storage/${user.profile}`
-                              )}`}
-                              alt="Profile"
-                              className="w-16 h-16 object-cover rounded-md"
-                            />
-                          ) : (
-                            <span className="text-gray-400">No Image</span>
-                          )}
-                        </td>
+          <div className="rounded-lg shadow overflow-x-auto">
+            <div className="max-h-[450px] overflow-y-auto">
+              <table className="min-w-full table-auto border border-[#3d5554] bg-white">
+                <thead className="bg-[#3d5554] text-white">
+                  <tr>
+                    <th className="py-3 px-5 border text-left">Profile</th>
+                    <th className="py-3 px-5 border text-left">Full Name</th>
+                    <th className="py-3 px-5 border text-left">Birthday</th>
+                    <th className="py-3 px-5 border text-left">Email</th>
+                    <th className="py-3 px-5 border text-left">Mobile</th>
+                    <th className="py-3 px-5 border text-left">Address</th>
+                    <th className="py-3 px-5 border text-left">User Type</th>
+                    <th className="py-3 px-5 border text-left">Status</th>
+                    <th className="py-3 px-5 border text-left">Last Login</th>
+                    <th className="py-3 px-5 border text-left">Tricycle No.</th>
+                    <th className="py-3 px-5 border text-left">
+                      Brgy Clearance
+                    </th>
+                    <th className="py-3 px-5 border text-left">Valid ID</th>
+                    <th className="py-3 px-5 border text-left">Action</th>
+                  </tr>
+                </thead>
 
-                        <td className="py-3 px-5 border">{user.full_name}</td>
-                        <td className="py-3 px-5 border">{user.birthday}</td>
-                        <td className="py-3 px-5 border">{user.email}</td>
-                        <td className="py-3 px-5 border">
-                          {user.mobile_number}
-                        </td>
-                        <td className="py-3 px-5 border">{user.address}</td>
-                        <td className="py-3 px-5 border capitalize">
-                          {user.user_type}
-                        </td>
-                        <td className="py-3 px-5 border">
-                          {user.is_active ? (
-                            <span className="text-green-600 font-medium">
-                              Online
-                            </span>
-                          ) : (
-                            <span className="text-red-600 font-medium">
-                              Offline
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-3 px-5 border">
-                          {user.last_login_at
-                            ? new Date(user.last_login_at).toLocaleString()
-                            : "—"}
-                        </td>
-                        <td className="py-3 px-5 border">
-                          {user.tricycle_number ?? "—"}
-                        </td>
+                <tbody className="text-black">
+                  {filteredUsers.map((user) => (
+                    <tr
+                      key={user.id}
+                      className={`transition-colors ${
+                        user.deleted_at
+                          ? "bg-red-100 hover:bg-red-200"
+                          : "hover:bg-gray-100"
+                      }`}
+                    >
+                      {/* Profile */}
+                      <td className="py-3 px-5 border">
+                        {user.profile ? (
+                          <img
+                            src={`/api/image-proxy?url=${encodeURIComponent(
+                              user.profile.startsWith("http://") ||
+                                user.profile.startsWith("https://")
+                                ? user.profile
+                                : `${process.env.NEXT_PUBLIC_API_STORAGE}storage/${user.profile}`
+                            )}`}
+                            alt="Profile"
+                            className="w-16 h-16 object-cover rounded-md"
+                          />
+                        ) : (
+                          <span className="text-gray-400">No Image</span>
+                        )}
+                      </td>
 
-                        {/* Barangay Clearance */}
-                        <td className="py-3 px-5 border">
-                          {user.brgy_clearance ? (
-                            <button
-                              onClick={() =>
-                                openModal(
-                                  [user.brgy_clearance],
-                                  "Brgy Clearance"
-                                )
-                              }
-                              className="text-blue-600 underline text-sm"
-                            >
-                              View
-                            </button>
-                          ) : (
-                            <span className="text-gray-400">No File</span>
-                          )}
-                        </td>
+                      <td className="py-3 px-5 border">{user.full_name}</td>
+                      <td className="py-3 px-5 border">{user.birthday}</td>
+                      <td className="py-3 px-5 border">{user.email}</td>
+                      <td className="py-3 px-5 border">{user.mobile_number}</td>
+                      <td className="py-3 px-5 border">{user.address}</td>
+                      <td className="py-3 px-5 border capitalize">
+                        {user.user_type}
+                      </td>
+                      <td className="py-3 px-5 border">
+                        {user.is_active ? (
+                          <span className="text-green-600 font-medium">
+                            Online
+                          </span>
+                        ) : (
+                          <span className="text-red-600 font-medium">
+                            Offline
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3 px-5 border">
+                        {user.last_login_at
+                          ? new Date(user.last_login_at).toLocaleString()
+                          : "—"}
+                      </td>
+                      <td className="py-3 px-5 border">
+                        {user.tricycle_number ?? "—"}
+                      </td>
 
-                        {/* Valid ID */}
-                        <td className="py-3 px-5 border">
-                          {user.valid_id?.front_image ||
-                          user.valid_id?.back_image ? (
-                            <button
-                              onClick={() =>
-                                openModal(
-                                  [
-                                    user.valid_id.front_image,
-                                    user.valid_id.back_image,
-                                  ],
-                                  "Valid ID",
-                                  user.valid_id.id_number
-                                )
-                              }
-                              className="text-blue-600 underline text-sm"
-                            >
-                              View
-                            </button>
-                          ) : (
-                            <span className="text-gray-400">No File</span>
-                          )}
-                        </td>
-
-                        {/* Action */}
-                        <td className="py-3 px-5 border">
+                      {/* Barangay Clearance */}
+                      <td className="py-3 px-5 border">
+                        {user.brgy_clearance ? (
                           <button
                             onClick={() =>
-                              toggleBlock(user.id, user.deleted_at)
+                              openModal([user.brgy_clearance], "Brgy Clearance")
                             }
-                            className={`px-3 py-1 rounded text-sm ${
-                              user.deleted_at
-                                ? "bg-green-600 hover:bg-green-700 text-white"
-                                : "bg-red-600 hover:bg-red-700 text-white"
-                            }`}
+                            className="text-blue-600 underline text-sm"
                           >
-                            {user.deleted_at ? "Unblock" : "Block"}
+                            View
                           </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                        ) : (
+                          <span className="text-gray-400">No File</span>
+                        )}
+                      </td>
+
+                      {/* Valid ID */}
+                      <td className="py-3 px-5 border">
+                        {user.valid_id?.front_image ||
+                        user.valid_id?.back_image ? (
+                          <button
+                            onClick={() =>
+                              openModal(
+                                [
+                                  user.valid_id.front_image,
+                                  user.valid_id.back_image,
+                                ],
+                                "Valid ID",
+                                user.valid_id.id_number
+                              )
+                            }
+                            className="text-blue-600 underline text-sm"
+                          >
+                            View
+                          </button>
+                        ) : (
+                          <span className="text-gray-400">No File</span>
+                        )}
+                      </td>
+
+                      {/* Action */}
+                      <td className="py-3 px-5 border">
+                        <button
+                          onClick={() => toggleBlock(user.id, user.deleted_at)}
+                          className={`px-3 py-1 rounded text-sm ${
+                            user.deleted_at
+                              ? "bg-green-600 hover:bg-green-700 text-white"
+                              : "bg-red-600 hover:bg-red-700 text-white"
+                          }`}
+                        >
+                          {user.deleted_at ? "Unblock" : "Block"}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          </PrintToPDF>
+          </div>
+
           {modalOpen && (
             <div
               className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
