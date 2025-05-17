@@ -87,6 +87,18 @@ const ReportBody = () => {
       setFilteredReport(report?.data || []);
     }
   };
+  const handleDispatchOptionFilter = (selectedOption: string) => {
+    if (!report) return;
+
+    if (selectedOption === "") {
+      setFilteredReport(report.data); // Reset to full
+    } else {
+      const filtered = report.data.filter(
+        (item) => item.dispatch_option === selectedOption
+      );
+      setFilteredReport(filtered);
+    }
+  };
 
   // Loading spinner while fetching
   if (loading)
@@ -107,6 +119,23 @@ const ReportBody = () => {
         onSearchChange={(search) => {}}
         onDateRangeChange={handleDateRangeChange}
         showDateRange={true}
+        customFilters={[
+          {
+            label: "Dispatch Option",
+            key: "dispatch_option",
+            options: [
+              { label: "Full Capacity", value: "Full Capacity" },
+              { label: "Emergency", value: "Emergency" },
+              { label: "Malfunctioned", value: "Malfunctioned" },
+              { label: "Charter/Pakyaw", value: "Charter/Pakyaw" },
+            ],
+          },
+        ]}
+        onCustomFilterChange={(key, value) => {
+          if (key === "dispatch_option") {
+            handleDispatchOptionFilter(value);
+          }
+        }}
       />
 
       {/* Print button and table */}
@@ -154,7 +183,25 @@ const ReportBody = () => {
                       {dispatch.scheduled_dispatch_time}
                     </td>
                     <td className="py-3 px-5 border">
-                      {dispatch.actual_dispatch_time ?? "N/A"}
+                      <div>{dispatch.actual_dispatch_time ?? "N/A"}</div>
+                      {dispatch.dispatch_option && (
+                        <div
+                          className={`mt-1 inline-block px-2 py-1 text-sm font-semibold rounded-full
+                            ${
+                              dispatch.dispatch_option === "Full Capacity"
+                                ? "bg-green-100 text-green-800"
+                                : dispatch.dispatch_option === "Emergency"
+                                ? "bg-red-100 text-red-800"
+                                : dispatch.dispatch_option === "Malfunctioned"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : dispatch.dispatch_option === "Charter/Pakyaw"
+                                ? "bg-blue-100 text-blue-800"
+                                : "bg-gray-100 text-gray-800"
+                            }`}
+                        >
+                          {dispatch.dispatch_option}
+                        </div>
+                      )}
                     </td>
                     <td className="py-3 px-5 border">
                       <div>{dispatch.dispatcher?.name || "N/A"}</div>

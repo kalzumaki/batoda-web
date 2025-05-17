@@ -3,6 +3,7 @@ export interface ReportData {
   passenger_count: number;
   scheduled_dispatch_time: string;
   actual_dispatch_time: string | null;
+  dispatch_option: string | null;
   dispatcher: Dispatcher;
   driver: Driver;
   created_at: string;
