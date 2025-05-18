@@ -142,13 +142,13 @@ const LoginPage: React.FC = () => {
   return (
     <>
       <title>LOGIN</title>
-      <div className="min-h-screen flex items-center justify-center bg-lightTeal">
+      <div className="min-h-screen flex items-center justify-center bg-lightTeal px-4 sm:px-6">
         <form
           onSubmit={handleSubmit}
-          className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full"
+          className="bg-white p-6 sm:p-8 rounded-lg shadow-lg max-w-md w-full"
         >
-          <img src={Logo.src} alt="Logo" className="w-24 mx-auto" />
-          <h2 className="text-2xl font-semibold text-black mb-6 mt-3 text-center">
+          <img src={Logo.src} alt="Logo" className="w-20 sm:w-24 mx-auto" />
+          <h2 className="text-xl sm:text-2xl font-semibold text-black mb-4 sm:mb-6 mt-2 sm:mt-3 text-center">
             Login
           </h2>
 
@@ -184,7 +184,7 @@ const LoginPage: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full bg-darkGreen text-white py-2 px-4 rounded-md hover:bg-teal transition-all flex items-center justify-center"
+            className="w-full bg-darkGreen text-white py-2 px-4 rounded-md hover:bg-teal transition-all flex items-center justify-center mt-4"
             disabled={(retryAfter !== null && retryAfter > 0) || isLoading}
           >
             {isLoading ? (
