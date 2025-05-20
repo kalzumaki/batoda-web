@@ -7,6 +7,7 @@ import { IoMdClose } from "react-icons/io";
 import { HiMenu } from "react-icons/hi";
 import Logo from "@/assets/logo.png";
 import { menuConfig } from "@/constants/sidebarConfig";
+import Link from "next/link";
 
 interface SidebarProps {
   userType: string;
@@ -87,6 +88,32 @@ const CustomSidebar: React.FC<SidebarProps> = ({
           <Menu>
             {menuItems.map((item) => (
               <MenuItem
+                className={`
+                    ${
+                      isActivePath(item.path)
+                        ? "!text-[#3d5554] bg-white"
+                        : "hover:!text-[#3d5554] hover:bg-white"
+                    }
+                `}
+                key={item.label}
+                icon={item.icon}
+                component={
+                  <Link
+                    href={item.path}
+                    onClick={() => isMobile && toggleSidebar()}
+                    className={`transition-colors duration-200 ${
+                      isActivePath(item.path)
+                        ? "text-[#3d5554] bg-white"
+                        : "hover:text-[#3d5554] hover:bg-white"
+                    }`}
+                  />
+                }
+              >
+                {isOpen ? item.label : ""}
+              </MenuItem>
+            ))}
+            {/* {menuItems.map((item) => (
+              <MenuItem
                 key={item.label}
                 icon={item.icon}
                 onClick={() => {
@@ -101,7 +128,7 @@ const CustomSidebar: React.FC<SidebarProps> = ({
               >
                 {isOpen ? item.label : ""}
               </MenuItem>
-            ))}
+            ))} */}
           </Menu>
         </div>
 
