@@ -345,12 +345,12 @@ const SettingsForm = () => {
         </div>
 
         {/* Submit Button */}
-        <div className="md:col-span-2 flex justify-between">
+        <div className="flex flex-col md:flex-row justify-between gap-4 md:gap-0 md:col-span-2">
           <SettingsChangePassword />
           <button
             type="submit"
             disabled={submitting}
-            className="bg-[#3d5554] text-white px-6 py-3 rounded-md flex items-center justify-center gap-2 hover:opacity-90 transition duration-200 disabled:opacity-60"
+            className="w-full md:w-auto bg-[#3d5554] text-white px-6 py-3 rounded-md flex items-center justify-center gap-2 hover:opacity-90 transition duration-200 disabled:opacity-60"
           >
             {submitting && (
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>

@@ -16,7 +16,7 @@ const SettingsChangePassword = () => {
   const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  // Send OTP
+
   const handleSendOtp = async () => {
     const token = Cookies.get("userToken");
     if (!token) return toast.error("User token is missing.");
@@ -24,7 +24,6 @@ const SettingsChangePassword = () => {
     setSendingOtp(true);
 
     try {
-      // Fetch user info to get email
       const userRes = await fetch(
         `/api/proxy?endpoint=${ENDPOINTS.USERS_TOKEN}`,
         {
@@ -41,7 +40,6 @@ const SettingsChangePassword = () => {
       const userEmail = userData.data.email;
       setEmail(userEmail);
 
-      // Send OTP to user's email
       const otpRes = await fetch(
         `/api/proxy?endpoint=${ENDPOINTS.SEND_OTP_PASSWORD_RESET}`,
         {
@@ -68,7 +66,6 @@ const SettingsChangePassword = () => {
     }
   };
 
-  // Submit OTP + New Password
   const handlePasswordSubmit = async () => {
     if (otpCode.length !== 6) return toast.error("OTP must be 6 digits.");
     if (newPassword !== confirmPassword)
@@ -120,7 +117,7 @@ const SettingsChangePassword = () => {
         type="button"
         onClick={handleSendOtp}
         disabled={sendingOtp}
-        className="bg-[#3d5554] text-white text-sm font-medium px-4 py-1.5 rounded-md shadow-sm hover:opacity-90 transition flex items-center gap-2 disabled:opacity-60"
+        className="w-full sm:w-auto bg-[#3d5554] text-white text-sm font-medium px-4 py-2 sm:py-1.5 rounded-md shadow-sm hover:opacity-90 transition flex items-center justify-center gap-2 disabled:opacity-60"
       >
         {sendingOtp && (
           <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -130,8 +127,8 @@ const SettingsChangePassword = () => {
 
       {/* OTP & Password Modal */}
       {showOtpModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-sm">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm mx-4">
             <h3 className="text-lg font-semibold mb-4 text-gray-800">
               Enter OTP & New Password
             </h3>
@@ -157,7 +154,7 @@ const SettingsChangePassword = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600"
               >
-                {showPassword ? <FiEye /> : <FiEyeOff />}
+                {showPassword ? <FiEye size={18} /> : <FiEyeOff size={18} />}
               </button>
             </div>
 
@@ -174,24 +171,24 @@ const SettingsChangePassword = () => {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600"
               >
-                {showConfirmPassword ? <FiEye /> : <FiEyeOff />}
+                {showConfirmPassword ? <FiEye size={18} /> : <FiEyeOff size={18} />}
               </button>
             </div>
 
-            <div className="flex justify-end gap-2">
+            <div className="flex flex-col sm:flex-row justify-end gap-2">
               <button
                 onClick={() => setShowOtpModal(false)}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 order-2 sm:order-1"
               >
                 Cancel
               </button>
               <button
                 onClick={handlePasswordSubmit}
                 disabled={submitting}
-                className="bg-[#3d5554] text-white px-4 py-2 rounded-md hover:opacity-90 disabled:opacity-60"
+                className="bg-[#3d5554] text-white px-4 py-2 rounded-md hover:opacity-90 disabled:opacity-60 order-1 sm:order-2"
               >
                 {submitting ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto"></div>
                 ) : (
                   "Submit"
                 )}
